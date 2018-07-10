@@ -23,17 +23,17 @@ import (
 	"sync"
 	"time"
 
-	"github.com/fatedier/frp/g"
-	"github.com/fatedier/frp/models/config"
-	"github.com/fatedier/frp/models/msg"
-	"github.com/fatedier/frp/models/proto/udp"
-	"github.com/fatedier/frp/utils/log"
-	frpNet "github.com/fatedier/frp/utils/net"
-	"github.com/fatedier/frp/utils/util"
-	"github.com/fatedier/frp/utils/vhost"
+	"github.com/admpub/frp/g"
+	"github.com/admpub/frp/models/config"
+	"github.com/admpub/frp/models/msg"
+	"github.com/admpub/frp/models/proto/udp"
+	"github.com/admpub/frp/utils/log"
+	frpNet "github.com/admpub/frp/utils/net"
+	"github.com/admpub/frp/utils/util"
+	"github.com/admpub/frp/utils/vhost"
 
-	"github.com/fatedier/golib/errors"
-	frpIo "github.com/fatedier/golib/io"
+	"github.com/admpub/golib/errors"
+	frpIo "github.com/admpub/golib/io"
 )
 
 type Proxy interface {

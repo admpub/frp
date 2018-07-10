@@ -26,15 +26,15 @@ import (
 
 	"golang.org/x/net/ipv4"
 
-	"github.com/fatedier/frp/g"
-	"github.com/fatedier/frp/models/config"
-	"github.com/fatedier/frp/models/msg"
-	"github.com/fatedier/frp/utils/log"
-	frpNet "github.com/fatedier/frp/utils/net"
-	"github.com/fatedier/frp/utils/util"
+	"github.com/admpub/frp/g"
+	"github.com/admpub/frp/models/config"
+	"github.com/admpub/frp/models/msg"
+	"github.com/admpub/frp/utils/log"
+	frpNet "github.com/admpub/frp/utils/net"
+	"github.com/admpub/frp/utils/util"
 
-	frpIo "github.com/fatedier/golib/io"
-	"github.com/fatedier/golib/pool"
+	frpIo "github.com/admpub/golib/io"
+	"github.com/admpub/golib/pool"
 )
 
 // Visitor is used for forward traffics from local port tot remote service.

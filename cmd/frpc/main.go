@@ -15,9 +15,9 @@
 package main
 
 import (
-	"github.com/fatedier/frp/cmd/frpc/sub"
+	"github.com/admpub/frp/cmd/frpc/sub"
 
-	"github.com/fatedier/golib/crypto"
+	"github.com/admpub/golib/crypto"
 )
 
 func main() {

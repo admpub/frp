@@ -22,17 +22,17 @@ import (
 	"sync"
 	"time"
 
-	"github.com/fatedier/frp/g"
-	"github.com/fatedier/frp/models/config"
-	"github.com/fatedier/frp/models/msg"
-	"github.com/fatedier/frp/models/plugin"
-	"github.com/fatedier/frp/models/proto/udp"
-	"github.com/fatedier/frp/utils/log"
-	frpNet "github.com/fatedier/frp/utils/net"
+	"github.com/admpub/frp/g"
+	"github.com/admpub/frp/models/config"
+	"github.com/admpub/frp/models/msg"
+	"github.com/admpub/frp/models/plugin"
+	"github.com/admpub/frp/models/proto/udp"
+	"github.com/admpub/frp/utils/log"
+	frpNet "github.com/admpub/frp/utils/net"
 
-	"github.com/fatedier/golib/errors"
-	frpIo "github.com/fatedier/golib/io"
-	"github.com/fatedier/golib/pool"
+	"github.com/admpub/golib/errors"
+	frpIo "github.com/admpub/golib/io"
+	"github.com/admpub/golib/pool"
 )
 
 // Proxy defines how to deal with work connections for different proxy type.

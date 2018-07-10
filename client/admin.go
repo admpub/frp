@@ -20,8 +20,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/fatedier/frp/g"
-	frpNet "github.com/fatedier/frp/utils/net"
+	"github.com/admpub/frp/g"
+	frpNet "github.com/admpub/frp/utils/net"
 
 	"github.com/gorilla/mux"
 )

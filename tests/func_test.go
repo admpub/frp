@@ -11,10 +11,10 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/fatedier/frp/client"
-	"github.com/fatedier/frp/server/ports"
+	"github.com/admpub/frp/client"
+	"github.com/admpub/frp/server/ports"
 
-	gnet "github.com/fatedier/golib/net"
+	gnet "github.com/admpub/golib/net"
 )
 
 var (

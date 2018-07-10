@@ -21,17 +21,17 @@ import (
 	"sync"
 	"time"
 
-	"github.com/fatedier/frp/g"
-	"github.com/fatedier/frp/models/config"
-	"github.com/fatedier/frp/models/consts"
-	frpErr "github.com/fatedier/frp/models/errors"
-	"github.com/fatedier/frp/models/msg"
-	"github.com/fatedier/frp/utils/net"
-	"github.com/fatedier/frp/utils/version"
+	"github.com/admpub/frp/g"
+	"github.com/admpub/frp/models/config"
+	"github.com/admpub/frp/models/consts"
+	frpErr "github.com/admpub/frp/models/errors"
+	"github.com/admpub/frp/models/msg"
+	"github.com/admpub/frp/utils/net"
+	"github.com/admpub/frp/utils/version"
 
-	"github.com/fatedier/golib/control/shutdown"
-	"github.com/fatedier/golib/crypto"
-	"github.com/fatedier/golib/errors"
+	"github.com/admpub/golib/control/shutdown"
+	"github.com/admpub/golib/crypto"
+	"github.com/admpub/golib/errors"
 )
 
 type Control struct {

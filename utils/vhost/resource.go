@@ -19,7 +19,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/fatedier/frp/utils/version"
+	"github.com/admpub/frp/utils/version"
 )
 
 const (
@@ -39,7 +39,7 @@ const (
 <h1>The page you visit not found.</h1>
 <p>Sorry, the page you are looking for is currently unavailable.<br/>
 Please try again later.</p>
-<p>The server is powered by <a href="https://github.com/fatedier/frp">frp</a>.</p>
+<p>The server is powered by <a href="https://github.com/admpub/frp">frp</a>.</p>
 <p><em>Faithfully yours, frp.</em></p>
 </body>
 </html>

@@ -19,9 +19,9 @@ import (
 	"net"
 	"sync"
 
-	"github.com/fatedier/frp/server/ports"
+	"github.com/admpub/frp/server/ports"
 
-	gerr "github.com/fatedier/golib/errors"
+	gerr "github.com/admpub/golib/errors"
 )
 
 type TcpGroupListener struct {

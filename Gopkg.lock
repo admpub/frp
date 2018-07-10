@@ -13,13 +13,13 @@
   version = "v1.1.0"
 
 [[projects]]
-  name = "github.com/fatedier/beego"
+  name = "github.com/admpub/beego"
   packages = ["logs"]
   revision = "6c6a4f5bd5eb5a39f7e289b8f345b55f75e7e3e8"
 
 [[projects]]
   branch = "master"
-  name = "github.com/fatedier/golib"
+  name = "github.com/admpub/golib"
   packages = [
     "control/shutdown",
     "crypto",
@@ -34,7 +34,7 @@
 
 [[projects]]
   branch = "frp"
-  name = "github.com/fatedier/kcp-go"
+  name = "github.com/admpub/kcp-go"
   packages = ["."]
   revision = "cd167d2f15f451b0f33780ce862fca97adc0331e"
 

@@ -19,9 +19,9 @@ import (
 	"io"
 	"net"
 
-	frpNet "github.com/fatedier/frp/utils/net"
+	frpNet "github.com/admpub/frp/utils/net"
 
-	frpIo "github.com/fatedier/golib/io"
+	frpIo "github.com/admpub/golib/io"
 )
 
 const PluginUnixDomainSocket = "unix_domain_socket"

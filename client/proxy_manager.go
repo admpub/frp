@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/fatedier/frp/models/config"
-	"github.com/fatedier/frp/models/msg"
-	"github.com/fatedier/frp/utils/log"
-	frpNet "github.com/fatedier/frp/utils/net"
+	"github.com/admpub/frp/models/config"
+	"github.com/admpub/frp/models/msg"
+	"github.com/admpub/frp/utils/log"
+	frpNet "github.com/admpub/frp/utils/net"
 
-	"github.com/fatedier/golib/errors"
+	"github.com/admpub/golib/errors"
 )
 
 const (

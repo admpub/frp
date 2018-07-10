@@ -17,7 +17,7 @@ package log
 import (
 	"fmt"
 
-	"github.com/fatedier/beego/logs"
+	"github.com/admpub/beego/logs"
 )
 
 var Log *logs.BeeLogger

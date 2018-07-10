@@ -19,9 +19,9 @@ import (
 	"net"
 	"sync"
 
-	"github.com/fatedier/frp/utils/log"
+	"github.com/admpub/frp/utils/log"
 
-	"github.com/fatedier/golib/errors"
+	"github.com/admpub/golib/errors"
 )
 
 type Listener interface {

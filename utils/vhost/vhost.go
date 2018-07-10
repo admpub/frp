@@ -18,10 +18,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/fatedier/frp/utils/log"
-	frpNet "github.com/fatedier/frp/utils/net"
+	"github.com/admpub/frp/utils/log"
+	frpNet "github.com/admpub/frp/utils/net"
 
-	"github.com/fatedier/golib/errors"
+	"github.com/admpub/golib/errors"
 )
 
 type muxFunc func(frpNet.Conn) (frpNet.Conn, map[string]string, error)

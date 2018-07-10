@@ -21,9 +21,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/fatedier/frp/utils/log"
+	"github.com/admpub/frp/utils/log"
 
-	"github.com/fatedier/golib/pool"
+	"github.com/admpub/golib/pool"
 )
 
 type UdpPacket struct {

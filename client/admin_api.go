@@ -24,9 +24,9 @@ import (
 
 	ini "github.com/vaughan0/go-ini"
 
-	"github.com/fatedier/frp/g"
-	"github.com/fatedier/frp/models/config"
-	"github.com/fatedier/frp/utils/log"
+	"github.com/admpub/frp/g"
+	"github.com/admpub/frp/models/config"
+	"github.com/admpub/frp/utils/log"
 )
 
 type GeneralResponse struct {

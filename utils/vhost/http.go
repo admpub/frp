@@ -25,10 +25,10 @@ import (
 	"strings"
 	"time"
 
-	frpNet "github.com/fatedier/frp/utils/net"
+	frpNet "github.com/admpub/frp/utils/net"
 
-	gnet "github.com/fatedier/golib/net"
-	"github.com/fatedier/golib/pool"
+	gnet "github.com/admpub/golib/net"
+	"github.com/admpub/golib/pool"
 )
 
 type HttpMuxer struct {

@@ -17,7 +17,7 @@ import (
 	"sync"
 	"time"
 
-	frpIo "github.com/fatedier/golib/io"
+	frpIo "github.com/admpub/golib/io"
 )
 
 // onExitFlushLoop is a callback set by tests to detect the state of the
