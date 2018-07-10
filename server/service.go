@@ -32,7 +32,7 @@ import (
 	"github.com/admpub/frp/utils/version"
 	"github.com/admpub/frp/utils/vhost"
 
-	"github.com/admpub/golib/net/mux"
+	"github.com/fatedier/golib/net/mux"
 	fmux "github.com/hashicorp/yamux"
 )
 

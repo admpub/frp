@@ -32,8 +32,8 @@ import (
 	"github.com/admpub/frp/utils/util"
 	"github.com/admpub/frp/utils/vhost"
 
-	"github.com/admpub/golib/errors"
-	frpIo "github.com/admpub/golib/io"
+	"github.com/fatedier/golib/errors"
+	frpIo "github.com/fatedier/golib/io"
 )
 
 type Proxy interface {

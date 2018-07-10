@@ -15,7 +15,7 @@
 package main
 
 import (
-	"github.com/admpub/golib/crypto"
+	"github.com/fatedier/golib/crypto"
 )
 
 func main() {

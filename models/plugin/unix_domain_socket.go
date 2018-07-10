@@ -21,7 +21,7 @@ import (
 
 	frpNet "github.com/admpub/frp/utils/net"
 
-	frpIo "github.com/admpub/golib/io"
+	frpIo "github.com/fatedier/golib/io"
 )
 
 const PluginUnixDomainSocket = "unix_domain_socket"

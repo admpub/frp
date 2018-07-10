@@ -9,7 +9,7 @@ import (
 	"github.com/admpub/frp/utils/log"
 	frpNet "github.com/admpub/frp/utils/net"
 
-	"github.com/admpub/golib/errors"
+	"github.com/fatedier/golib/errors"
 )
 
 const (

@@ -22,7 +22,7 @@ import (
 
 	frpNet "github.com/admpub/frp/utils/net"
 
-	"github.com/admpub/golib/errors"
+	"github.com/fatedier/golib/errors"
 )
 
 // Creators is used for create plugins to handle connections.

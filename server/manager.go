@@ -22,7 +22,7 @@ import (
 	frpNet "github.com/admpub/frp/utils/net"
 	"github.com/admpub/frp/utils/util"
 
-	frpIo "github.com/admpub/golib/io"
+	frpIo "github.com/fatedier/golib/io"
 )
 
 type ControlManager struct {

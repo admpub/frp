@@ -30,9 +30,9 @@ import (
 	"github.com/admpub/frp/utils/log"
 	frpNet "github.com/admpub/frp/utils/net"
 
-	"github.com/admpub/golib/errors"
-	frpIo "github.com/admpub/golib/io"
-	"github.com/admpub/golib/pool"
+	"github.com/fatedier/golib/errors"
+	frpIo "github.com/fatedier/golib/io"
+	"github.com/fatedier/golib/pool"
 )
 
 // Proxy defines how to deal with work connections for different proxy type.

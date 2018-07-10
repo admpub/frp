@@ -21,7 +21,7 @@ import (
 
 	"github.com/admpub/frp/utils/log"
 
-	"github.com/admpub/golib/errors"
+	"github.com/fatedier/golib/errors"
 )
 
 type Listener interface {

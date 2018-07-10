@@ -31,8 +31,8 @@ import (
 	"github.com/admpub/frp/utils/util"
 	"github.com/admpub/frp/utils/version"
 
-	"github.com/admpub/golib/control/shutdown"
-	"github.com/admpub/golib/crypto"
+	"github.com/fatedier/golib/control/shutdown"
+	"github.com/fatedier/golib/crypto"
 	fmux "github.com/hashicorp/yamux"
 )
 

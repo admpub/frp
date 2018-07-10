@@ -20,7 +20,7 @@ import (
 
 	"github.com/admpub/frp/utils/log"
 
-	kcp "github.com/admpub/kcp-go"
+	kcp "github.com/fatedier/kcp-go"
 )
 
 type KcpListener struct {

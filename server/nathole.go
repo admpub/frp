@@ -11,8 +11,8 @@ import (
 	"github.com/admpub/frp/utils/log"
 	"github.com/admpub/frp/utils/util"
 
-	"github.com/admpub/golib/errors"
-	"github.com/admpub/golib/pool"
+	"github.com/fatedier/golib/errors"
+	"github.com/fatedier/golib/pool"
 )
 
 // Timeout seconds.

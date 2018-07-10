@@ -24,8 +24,8 @@ import (
 
 	frpNet "github.com/admpub/frp/utils/net"
 
-	frpIo "github.com/admpub/golib/io"
-	gnet "github.com/admpub/golib/net"
+	frpIo "github.com/fatedier/golib/io"
+	gnet "github.com/fatedier/golib/net"
 )
 
 const PluginHttpProxy = "http_proxy"

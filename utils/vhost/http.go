@@ -27,8 +27,8 @@ import (
 
 	frpNet "github.com/admpub/frp/utils/net"
 
-	gnet "github.com/admpub/golib/net"
-	"github.com/admpub/golib/pool"
+	gnet "github.com/fatedier/golib/net"
+	"github.com/fatedier/golib/pool"
 )
 
 type HttpMuxer struct {

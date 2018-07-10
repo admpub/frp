@@ -33,8 +33,8 @@ import (
 	frpNet "github.com/admpub/frp/utils/net"
 	"github.com/admpub/frp/utils/util"
 
-	frpIo "github.com/admpub/golib/io"
-	"github.com/admpub/golib/pool"
+	frpIo "github.com/fatedier/golib/io"
+	"github.com/fatedier/golib/pool"
 )
 
 // Visitor is used for forward traffics from local port tot remote service.

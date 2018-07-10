@@ -29,9 +29,9 @@ import (
 	"github.com/admpub/frp/utils/net"
 	"github.com/admpub/frp/utils/version"
 
-	"github.com/admpub/golib/control/shutdown"
-	"github.com/admpub/golib/crypto"
-	"github.com/admpub/golib/errors"
+	"github.com/fatedier/golib/control/shutdown"
+	"github.com/fatedier/golib/crypto"
+	"github.com/fatedier/golib/errors"
 )
 
 type Control struct {

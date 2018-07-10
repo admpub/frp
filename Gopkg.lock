@@ -19,7 +19,7 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/admpub/golib"
+  name = "github.com/fatedier/golib"
   packages = [
     "control/shutdown",
     "crypto",
@@ -34,7 +34,7 @@
 
 [[projects]]
   branch = "frp"
-  name = "github.com/admpub/kcp-go"
+  name = "github.com/fatedier/kcp-go"
   packages = ["."]
   revision = "cd167d2f15f451b0f33780ce862fca97adc0331e"
 

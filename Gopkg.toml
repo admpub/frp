@@ -34,12 +34,12 @@
   revision = "6c6a4f5bd5eb5a39f7e289b8f345b55f75e7e3e8"
 
 [[constraint]]
-  name = "github.com/admpub/golib"
+  name = "github.com/fatedier/golib"
   branch = "master"
 
 [[constraint]]
   branch = "frp"
-  name = "github.com/admpub/kcp-go"
+  name = "github.com/fatedier/kcp-go"
 
 [[constraint]]
   name = "github.com/gorilla/websocket"

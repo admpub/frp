@@ -14,7 +14,7 @@ import (
 	"github.com/admpub/frp/client"
 	"github.com/admpub/frp/server/ports"
 
-	gnet "github.com/admpub/golib/net"
+	gnet "github.com/fatedier/golib/net"
 )
 
 var (

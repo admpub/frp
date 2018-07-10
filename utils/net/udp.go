@@ -23,7 +23,7 @@ import (
 
 	"github.com/admpub/frp/utils/log"
 
-	"github.com/admpub/golib/pool"
+	"github.com/fatedier/golib/pool"
 )
 
 type UdpPacket struct {

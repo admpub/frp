@@ -24,8 +24,8 @@ import (
 
 	"github.com/admpub/frp/utils/log"
 
-	gnet "github.com/admpub/golib/net"
-	kcp "github.com/admpub/kcp-go"
+	gnet "github.com/fatedier/golib/net"
+	kcp "github.com/fatedier/kcp-go"
 )
 
 // Conn is the interface of connections used in frp.

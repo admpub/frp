@@ -21,7 +21,7 @@ import (
 
 	"github.com/admpub/frp/server/ports"
 
-	gerr "github.com/admpub/golib/errors"
+	gerr "github.com/fatedier/golib/errors"
 )
 
 type TcpGroupListener struct {

@@ -27,7 +27,7 @@ import (
 
 	frpLog "github.com/admpub/frp/utils/log"
 
-	"github.com/admpub/golib/pool"
+	"github.com/fatedier/golib/pool"
 )
 
 var (
