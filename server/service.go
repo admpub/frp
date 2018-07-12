@@ -95,7 +95,8 @@ func NewService() (svr *Service, err error) {
 	err = assets.Load(cfg.AssetsDir)
 	if err != nil {
 		err = fmt.Errorf("Load assets error: %v", err)
-		return
+		log.Error(err.Error())
+		//return
 	}
 
 	var (
