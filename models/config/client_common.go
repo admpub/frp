@@ -15,15 +15,17 @@
 package config
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
 
-	ini "github.com/vaughan0/go-ini"
+	"github.com/admpub/ini"
 )
 
-// client common config
+// ClientCommonConf client common config
 type ClientCommonConf struct {
 	ServerAddr        string              `json:"server_addr"`
 	ServerPort        int                 `json:"server_port"`
@@ -80,22 +82,21 @@ func UnmarshalClientConfFromIni(defaultCfg *ClientCommonConf, content string) (c
 		cfg = GetDefaultClientConf()
 	}
 
-	conf, err := ini.Load(strings.NewReader(content))
+	conf, err := ini.Load(ioutil.NopCloser(bytes.NewBufferString(content)))
 	if err != nil {
 		err = fmt.Errorf("parse ini conf file error: %v", err)
 		return nil, err
 	}
 
 	var (
-		tmpStr string
-		ok     bool
-		v      int64
+		v int64
 	)
-	if tmpStr, ok = conf.Get("common", "server_addr"); ok {
+	commonSection := conf.Section("common")
+	if tmpStr := commonSection.Key("server_addr").String(); len(tmpStr) > 0 {
 		cfg.ServerAddr = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "server_port"); ok {
+	if tmpStr := commonSection.Key("server_port").String(); len(tmpStr) > 0 {
 		v, err = strconv.ParseInt(tmpStr, 10, 64)
 		if err != nil {
 			err = fmt.Errorf("Parse conf error: invalid server_port")
@@ -104,11 +105,11 @@ func UnmarshalClientConfFromIni(defaultCfg *ClientCommonConf, content string) (c
 		cfg.ServerPort = int(v)
 	}
 
-	if tmpStr, ok = conf.Get("common", "http_proxy"); ok {
+	if tmpStr := commonSection.Key("http_proxy").String(); len(tmpStr) > 0 {
 		cfg.HttpProxy = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "log_file"); ok {
+	if tmpStr := commonSection.Key("log_file").String(); len(tmpStr) > 0 {
 		cfg.LogFile = tmpStr
 		if cfg.LogFile == "console" {
 			cfg.LogWay = "console"
@@ -117,25 +118,25 @@ func UnmarshalClientConfFromIni(defaultCfg *ClientCommonConf, content string) (c
 		}
 	}
 
-	if tmpStr, ok = conf.Get("common", "log_level"); ok {
+	if tmpStr := commonSection.Key("log_level").String(); len(tmpStr) > 0 {
 		cfg.LogLevel = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "log_max_days"); ok {
+	if tmpStr := commonSection.Key("log_max_days").String(); len(tmpStr) > 0 {
 		if v, err = strconv.ParseInt(tmpStr, 10, 64); err == nil {
 			cfg.LogMaxDays = v
 		}
 	}
 
-	if tmpStr, ok = conf.Get("common", "token"); ok {
+	if tmpStr := commonSection.Key("token").String(); len(tmpStr) > 0 {
 		cfg.Token = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "admin_addr"); ok {
+	if tmpStr := commonSection.Key("admin_addr").String(); len(tmpStr) > 0 {
 		cfg.AdminAddr = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "admin_port"); ok {
+	if tmpStr := commonSection.Key("admin_port").String(); len(tmpStr) > 0 {
 		if v, err = strconv.ParseInt(tmpStr, 10, 64); err == nil {
 			cfg.AdminPort = int(v)
 		} else {
@@ -144,48 +145,48 @@ func UnmarshalClientConfFromIni(defaultCfg *ClientCommonConf, content string) (c
 		}
 	}
 
-	if tmpStr, ok = conf.Get("common", "admin_user"); ok {
+	if tmpStr := commonSection.Key("admin_user").String(); len(tmpStr) > 0 {
 		cfg.AdminUser = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "admin_pwd"); ok {
+	if tmpStr := commonSection.Key("admin_pwd").String(); len(tmpStr) > 0 {
 		cfg.AdminPwd = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "pool_count"); ok {
+	if tmpStr := commonSection.Key("pool_count").String(); len(tmpStr) > 0 {
 		if v, err = strconv.ParseInt(tmpStr, 10, 64); err == nil {
 			cfg.PoolCount = int(v)
 		}
 	}
 
-	if tmpStr, ok = conf.Get("common", "tcp_mux"); ok && tmpStr == "false" {
+	if tmpStr := commonSection.Key("tcp_mux").String(); tmpStr == "false" {
 		cfg.TcpMux = false
 	} else {
 		cfg.TcpMux = true
 	}
 
-	if tmpStr, ok = conf.Get("common", "user"); ok {
+	if tmpStr := commonSection.Key("user").String(); len(tmpStr) > 0 {
 		cfg.User = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "dns_server"); ok {
+	if tmpStr := commonSection.Key("dns_server").String(); len(tmpStr) > 0 {
 		cfg.DnsServer = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "start"); ok {
+	if tmpStr := commonSection.Key("start").String(); len(tmpStr) > 0 {
 		proxyNames := strings.Split(tmpStr, ",")
 		for _, name := range proxyNames {
 			cfg.Start[strings.TrimSpace(name)] = struct{}{}
 		}
 	}
 
-	if tmpStr, ok = conf.Get("common", "login_fail_exit"); ok && tmpStr == "false" {
+	if tmpStr := commonSection.Key("login_fail_exit").String(); tmpStr == "false" {
 		cfg.LoginFailExit = false
 	} else {
 		cfg.LoginFailExit = true
 	}
 
-	if tmpStr, ok = conf.Get("common", "protocol"); ok {
+	if tmpStr := commonSection.Key("protocol").String(); len(tmpStr) > 0 {
 		// Now it only support tcp and kcp.
 		if tmpStr != "kcp" {
 			tmpStr = "tcp"
@@ -193,7 +194,7 @@ func UnmarshalClientConfFromIni(defaultCfg *ClientCommonConf, content string) (c
 		cfg.Protocol = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "heartbeat_timeout"); ok {
+	if tmpStr := commonSection.Key("heartbeat_timeout").String(); len(tmpStr) > 0 {
 		if v, err = strconv.ParseInt(tmpStr, 10, 64); err != nil {
 			err = fmt.Errorf("Parse conf error: invalid heartbeat_timeout")
 			return
@@ -202,7 +203,7 @@ func UnmarshalClientConfFromIni(defaultCfg *ClientCommonConf, content string) (c
 		}
 	}
 
-	if tmpStr, ok = conf.Get("common", "heartbeat_interval"); ok {
+	if tmpStr := commonSection.Key("heartbeat_interval").String(); len(tmpStr) > 0 {
 		if v, err = strconv.ParseInt(tmpStr, 10, 64); err != nil {
 			err = fmt.Errorf("Parse conf error: invalid heartbeat_interval")
 			return

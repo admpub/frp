@@ -23,8 +23,7 @@ import (
 	"github.com/admpub/frp/models/consts"
 	"github.com/admpub/frp/models/msg"
 	"github.com/admpub/frp/utils/util"
-
-	ini "github.com/vaughan0/go-ini"
+	"github.com/admpub/ini"
 )
 
 var (
@@ -55,7 +54,7 @@ func NewConfByType(proxyType string) ProxyConf {
 type ProxyConf interface {
 	GetBaseInfo() *BaseProxyConf
 	UnmarshalFromMsg(pMsg *msg.NewProxy)
-	UnmarshalFromIni(prefix string, name string, conf ini.Section) error
+	UnmarshalFromIni(prefix string, name string, conf *ini.Section) error
 	MarshalToMsg(pMsg *msg.NewProxy)
 	CheckForCli() error
 	CheckForSvr() error
@@ -77,11 +76,11 @@ func NewProxyConfFromMsg(pMsg *msg.NewProxy) (cfg ProxyConf, err error) {
 	return
 }
 
-func NewProxyConfFromIni(prefix string, name string, section ini.Section) (cfg ProxyConf, err error) {
-	proxyType := section["type"]
+func NewProxyConfFromIni(prefix string, name string, section *ini.Section) (cfg ProxyConf, err error) {
+	proxyType := section.Key("type").String()
 	if proxyType == "" {
 		proxyType = consts.TcpProxy
-		section["type"] = consts.TcpProxy
+		section.Key("type").SetValue(consts.TcpProxy)
 	}
 	cfg = NewConfByType(proxyType)
 	if cfg == nil {
@@ -95,7 +94,7 @@ func NewProxyConfFromIni(prefix string, name string, section ini.Section) (cfg P
 	return
 }
 
-// BaseProxy info
+// BaseProxyConf BaseProxy info
 type BaseProxyConf struct {
 	ProxyName string `json:"proxy_name"`
 	ProxyType string `json:"proxy_type"`
@@ -131,26 +130,25 @@ func (cfg *BaseProxyConf) UnmarshalFromMsg(pMsg *msg.NewProxy) {
 	cfg.GroupKey = pMsg.GroupKey
 }
 
-func (cfg *BaseProxyConf) UnmarshalFromIni(prefix string, name string, section ini.Section) error {
+func (cfg *BaseProxyConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) error {
 	var (
 		tmpStr string
-		ok     bool
 	)
 	cfg.ProxyName = prefix + name
-	cfg.ProxyType = section["type"]
+	cfg.ProxyType = section.Key("type").String()
 
-	tmpStr, ok = section["use_encryption"]
-	if ok && tmpStr == "true" {
+	tmpStr = section.Key("use_encryption").String()
+	if tmpStr == "true" {
 		cfg.UseEncryption = true
 	}
 
-	tmpStr, ok = section["use_compression"]
-	if ok && tmpStr == "true" {
+	tmpStr = section.Key("use_compression").String()
+	if tmpStr == "true" {
 		cfg.UseCompression = true
 	}
 
-	cfg.Group = section["group"]
-	cfg.GroupKey = section["group_key"]
+	cfg.Group = section.Key("group").String()
+	cfg.GroupKey = section.Key("group_key").String()
 	return nil
 }
 
@@ -179,14 +177,9 @@ func (cfg *BindInfoConf) UnmarshalFromMsg(pMsg *msg.NewProxy) {
 	cfg.RemotePort = pMsg.RemotePort
 }
 
-func (cfg *BindInfoConf) UnmarshalFromIni(prefix string, name string, section ini.Section) (err error) {
-	var (
-		tmpStr string
-		ok     bool
-		v      int64
-	)
-	if tmpStr, ok = section["remote_port"]; ok {
-		if v, err = strconv.ParseInt(tmpStr, 10, 64); err != nil {
+func (cfg *BindInfoConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) error {
+	if tmpStr := section.Key("remote_port").String(); len(tmpStr) > 0 {
+		if v, err := strconv.ParseInt(tmpStr, 10, 64); err != nil {
 			return fmt.Errorf("Parse conf error: proxy [%s] remote_port error", name)
 		} else {
 			cfg.RemotePort = int(v)
@@ -220,19 +213,18 @@ func (cfg *DomainConf) UnmarshalFromMsg(pMsg *msg.NewProxy) {
 	cfg.SubDomain = pMsg.SubDomain
 }
 
-func (cfg *DomainConf) UnmarshalFromIni(prefix string, name string, section ini.Section) (err error) {
+func (cfg *DomainConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) (err error) {
 	var (
 		tmpStr string
-		ok     bool
 	)
-	if tmpStr, ok = section["custom_domains"]; ok {
+	if tmpStr = section.Key("custom_domains").String(); len(tmpStr) > 0 {
 		cfg.CustomDomains = strings.Split(tmpStr, ",")
 		for i, domain := range cfg.CustomDomains {
 			cfg.CustomDomains[i] = strings.ToLower(strings.TrimSpace(domain))
 		}
 	}
 
-	if tmpStr, ok = section["subdomain"]; ok {
+	if tmpStr = section.Key("subdomain").String(); len(tmpStr) > 0 {
 		cfg.SubDomain = tmpStr
 	}
 	return
@@ -309,22 +301,22 @@ func (cfg *LocalSvrConf) compare(cmp *LocalSvrConf) bool {
 	return true
 }
 
-func (cfg *LocalSvrConf) UnmarshalFromIni(prefix string, name string, section ini.Section) (err error) {
-	cfg.Plugin = section["plugin"]
+func (cfg *LocalSvrConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) (err error) {
+	cfg.Plugin = section.Key("plugin").String()
 	cfg.PluginParams = make(map[string]string)
 	if cfg.Plugin != "" {
 		// get params begin with "plugin_"
-		for k, v := range section {
+		for _, k := range section.KeyStrings() {
 			if strings.HasPrefix(k, "plugin_") {
-				cfg.PluginParams[k] = v
+				cfg.PluginParams[k] = section.Key(k).String()
 			}
 		}
 	} else {
-		if cfg.LocalIp = section["local_ip"]; cfg.LocalIp == "" {
+		if cfg.LocalIp = section.Key("local_ip").String(); len(cfg.LocalIp) > 0 {
 			cfg.LocalIp = "127.0.0.1"
 		}
 
-		if tmpStr, ok := section["local_port"]; ok {
+		if tmpStr := section.Key("local_port").String(); len(tmpStr) > 0 {
 			if cfg.LocalPort, err = strconv.Atoi(tmpStr); err != nil {
 				return fmt.Errorf("Parse conf error: proxy [%s] local_port error", name)
 			}
@@ -362,7 +354,7 @@ func (cfg *TcpProxyConf) UnmarshalFromMsg(pMsg *msg.NewProxy) {
 	cfg.BindInfoConf.UnmarshalFromMsg(pMsg)
 }
 
-func (cfg *TcpProxyConf) UnmarshalFromIni(prefix string, name string, section ini.Section) (err error) {
+func (cfg *TcpProxyConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) (err error) {
 	if err = cfg.BaseProxyConf.UnmarshalFromIni(prefix, name, section); err != nil {
 		return
 	}
@@ -411,7 +403,7 @@ func (cfg *UdpProxyConf) UnmarshalFromMsg(pMsg *msg.NewProxy) {
 	cfg.BindInfoConf.UnmarshalFromMsg(pMsg)
 }
 
-func (cfg *UdpProxyConf) UnmarshalFromIni(prefix string, name string, section ini.Section) (err error) {
+func (cfg *UdpProxyConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) (err error) {
 	if err = cfg.BaseProxyConf.UnmarshalFromIni(prefix, name, section); err != nil {
 		return
 	}
@@ -487,7 +479,7 @@ func (cfg *HttpProxyConf) UnmarshalFromMsg(pMsg *msg.NewProxy) {
 	cfg.Headers = pMsg.Headers
 }
 
-func (cfg *HttpProxyConf) UnmarshalFromIni(prefix string, name string, section ini.Section) (err error) {
+func (cfg *HttpProxyConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) (err error) {
 	if err = cfg.BaseProxyConf.UnmarshalFromIni(prefix, name, section); err != nil {
 		return
 	}
@@ -497,25 +489,20 @@ func (cfg *HttpProxyConf) UnmarshalFromIni(prefix string, name string, section i
 	if err = cfg.LocalSvrConf.UnmarshalFromIni(prefix, name, section); err != nil {
 		return
 	}
-
-	var (
-		tmpStr string
-		ok     bool
-	)
-	if tmpStr, ok = section["locations"]; ok {
+	if tmpStr := section.Key("locations").String(); len(tmpStr) > 0 {
 		cfg.Locations = strings.Split(tmpStr, ",")
 	} else {
 		cfg.Locations = []string{""}
 	}
 
-	cfg.HostHeaderRewrite = section["host_header_rewrite"]
-	cfg.HttpUser = section["http_user"]
-	cfg.HttpPwd = section["http_pwd"]
+	cfg.HostHeaderRewrite = section.Key("host_header_rewrite").String()
+	cfg.HttpUser = section.Key("http_user").String()
+	cfg.HttpPwd = section.Key("http_pwd").String()
 	cfg.Headers = make(map[string]string)
 
-	for k, v := range section {
+	for _, k := range section.KeyStrings() {
 		if strings.HasPrefix(k, "header_") {
-			cfg.Headers[strings.TrimPrefix(k, "header_")] = v
+			cfg.Headers[strings.TrimPrefix(k, "header_")] = section.Key(k).String()
 		}
 	}
 	return
@@ -577,7 +564,7 @@ func (cfg *HttpsProxyConf) UnmarshalFromMsg(pMsg *msg.NewProxy) {
 	cfg.DomainConf.UnmarshalFromMsg(pMsg)
 }
 
-func (cfg *HttpsProxyConf) UnmarshalFromIni(prefix string, name string, section ini.Section) (err error) {
+func (cfg *HttpsProxyConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) (err error) {
 	if err = cfg.BaseProxyConf.UnmarshalFromIni(prefix, name, section); err != nil {
 		return
 	}
@@ -653,12 +640,12 @@ func (cfg *StcpProxyConf) UnmarshalFromMsg(pMsg *msg.NewProxy) {
 	cfg.Sk = pMsg.Sk
 }
 
-func (cfg *StcpProxyConf) UnmarshalFromIni(prefix string, name string, section ini.Section) (err error) {
+func (cfg *StcpProxyConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) (err error) {
 	if err = cfg.BaseProxyConf.UnmarshalFromIni(prefix, name, section); err != nil {
 		return
 	}
 
-	tmpStr := section["role"]
+	tmpStr := section.Key("role").String()
 	if tmpStr == "" {
 		tmpStr = "server"
 	}
@@ -668,16 +655,16 @@ func (cfg *StcpProxyConf) UnmarshalFromIni(prefix string, name string, section i
 		return fmt.Errorf("Parse conf error: proxy [%s] incorrect role [%s]", name, tmpStr)
 	}
 
-	cfg.Sk = section["sk"]
+	cfg.Sk = section.Key("sk").String()
 
 	if tmpStr == "visitor" {
-		prefix := section["prefix"]
-		cfg.ServerName = prefix + section["server_name"]
-		if cfg.BindAddr = section["bind_addr"]; cfg.BindAddr == "" {
+		prefix := section.Key("prefix").String()
+		cfg.ServerName = prefix + section.Key("server_name").String()
+		if cfg.BindAddr = section.Key("bind_addr").String(); len(cfg.BindAddr) == 0 {
 			cfg.BindAddr = "127.0.0.1"
 		}
 
-		if tmpStr, ok := section["bind_port"]; ok {
+		if tmpStr := section.Key("bind_port").String(); len(tmpStr) > 0 {
 			if cfg.BindPort, err = strconv.Atoi(tmpStr); err != nil {
 				return fmt.Errorf("Parse conf error: proxy [%s] bind_port error", name)
 			}
@@ -759,12 +746,12 @@ func (cfg *XtcpProxyConf) UnmarshalFromMsg(pMsg *msg.NewProxy) {
 	cfg.Sk = pMsg.Sk
 }
 
-func (cfg *XtcpProxyConf) UnmarshalFromIni(prefix string, name string, section ini.Section) (err error) {
+func (cfg *XtcpProxyConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) (err error) {
 	if err = cfg.BaseProxyConf.UnmarshalFromIni(prefix, name, section); err != nil {
 		return
 	}
 
-	tmpStr := section["role"]
+	tmpStr := section.Key("role").String()
 	if tmpStr == "" {
 		tmpStr = "server"
 	}
@@ -774,16 +761,16 @@ func (cfg *XtcpProxyConf) UnmarshalFromIni(prefix string, name string, section i
 		return fmt.Errorf("Parse conf error: proxy [%s] incorrect role [%s]", name, tmpStr)
 	}
 
-	cfg.Sk = section["sk"]
+	cfg.Sk = section.Key("sk").String()
 
 	if tmpStr == "visitor" {
-		prefix := section["prefix"]
-		cfg.ServerName = prefix + section["server_name"]
-		if cfg.BindAddr = section["bind_addr"]; cfg.BindAddr == "" {
+		prefix := section.Key("prefix").String()
+		cfg.ServerName = prefix + section.Key("server_name").String()
+		if cfg.BindAddr = section.Key("bind_addr").String(); cfg.BindAddr == "" {
 			cfg.BindAddr = "127.0.0.1"
 		}
 
-		if tmpStr, ok := section["bind_port"]; ok {
+		if tmpStr := section.Key("bind_port").String(); len(tmpStr) > 0 {
 			if cfg.BindPort, err = strconv.Atoi(tmpStr); err != nil {
 				return fmt.Errorf("Parse conf error: proxy [%s] bind_port error", name)
 			}
@@ -825,14 +812,14 @@ func (cfg *XtcpProxyConf) CheckForSvr() (err error) {
 	return
 }
 
-func ParseRangeSection(name string, section ini.Section) (sections map[string]ini.Section, err error) {
-	localPorts, errRet := util.ParseRangeNumbers(section["local_port"])
+func ParseRangeSection(name string, section *ini.Section) (sections map[string]*ini.Section, err error) {
+	localPorts, errRet := util.ParseRangeNumbers(section.Key("local_port").String())
 	if errRet != nil {
 		err = fmt.Errorf("Parse conf error: range section [%s] local_port invalid, %v", name, errRet)
 		return
 	}
 
-	remotePorts, errRet := util.ParseRangeNumbers(section["remote_port"])
+	remotePorts, errRet := util.ParseRangeNumbers(section.Key("remote_port").String())
 	if errRet != nil {
 		err = fmt.Errorf("Parse conf error: range section [%s] remote_port invalid, %v", name, errRet)
 		return
@@ -845,21 +832,20 @@ func ParseRangeSection(name string, section ini.Section) (sections map[string]in
 		err = fmt.Errorf("Parse conf error: range section [%s] local_port and remote_port is necessary", name)
 		return
 	}
-
-	sections = make(map[string]ini.Section)
+	sections = make(map[string]*ini.Section)
 	for i, port := range localPorts {
 		subName := fmt.Sprintf("%s_%d", name, i)
-		subSection := copySection(section)
-		subSection["local_port"] = fmt.Sprintf("%d", port)
-		subSection["remote_port"] = fmt.Sprintf("%d", remotePorts[i])
+		subSection := copySection(section, subName)
+		subSection.Key("local_port").SetValue(fmt.Sprintf("%d", port))
+		subSection.Key("remote_port").SetValue(fmt.Sprintf("%d", remotePorts[i]))
 		sections[subName] = subSection
 	}
 	return
 }
 
-// if len(startProxy) is 0, start all
+// LoadProxyConfFromIni if len(startProxy) is 0, start all
 // otherwise just start proxies in startProxy map
-func LoadProxyConfFromIni(prefix string, conf ini.File, startProxy map[string]struct{}) (
+func LoadProxyConfFromIni(prefix string, conf *ini.File, startProxy map[string]struct{}) (
 	proxyConfs map[string]ProxyConf, visitorConfs map[string]ProxyConf, err error) {
 
 	if prefix != "" {
@@ -872,8 +858,9 @@ func LoadProxyConfFromIni(prefix string, conf ini.File, startProxy map[string]st
 	}
 	proxyConfs = make(map[string]ProxyConf)
 	visitorConfs = make(map[string]ProxyConf)
-	for name, section := range conf {
-		if name == "common" {
+	for _, section := range conf.Sections() {
+		name := section.Name()
+		if name == "common" || name == ini.DEFAULT_SECTION {
 			continue
 		}
 
@@ -882,7 +869,7 @@ func LoadProxyConfFromIni(prefix string, conf ini.File, startProxy map[string]st
 			continue
 		}
 
-		subSections := make(map[string]ini.Section)
+		subSections := make(map[string]*ini.Section)
 
 		if strings.HasPrefix(name, "range:") {
 			// range section
@@ -901,7 +888,7 @@ func LoadProxyConfFromIni(prefix string, conf ini.File, startProxy map[string]st
 				return proxyConfs, visitorConfs, err
 			}
 
-			role := subSection["role"]
+			role := subSection.Key("role").String()
 			if role == "visitor" {
 				visitorConfs[prefix+subName] = cfg
 			} else {
@@ -912,10 +899,6 @@ func LoadProxyConfFromIni(prefix string, conf ini.File, startProxy map[string]st
 	return
 }
 
-func copySection(section ini.Section) (out ini.Section) {
-	out = make(ini.Section)
-	for k, v := range section {
-		out[k] = v
-	}
-	return
+func copySection(section *ini.Section, newSectionName string) *ini.Section {
+	return section.Clone(newSectionName)
 }

@@ -22,7 +22,7 @@ import (
 	"sort"
 	"strings"
 
-	ini "github.com/vaughan0/go-ini"
+	"github.com/admpub/ini"
 
 	"github.com/admpub/frp/g"
 	"github.com/admpub/frp/models/config"
@@ -69,7 +69,7 @@ func (svr *Service) apiReload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	conf, err := ini.LoadFile(g.GlbClientCfg.CfgFile)
+	conf, err := ini.Load(g.GlbClientCfg.CfgFile)
 	if err != nil {
 		res.Code = 1
 		res.Msg = err.Error()

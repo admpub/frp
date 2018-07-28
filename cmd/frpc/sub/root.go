@@ -26,8 +26,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/admpub/ini"
 	"github.com/spf13/cobra"
-	ini "github.com/vaughan0/go-ini"
 
 	"github.com/admpub/frp/client"
 	"github.com/admpub/frp/g"
@@ -175,7 +175,7 @@ func runClient(cfgFilePath string) (err error) {
 		return
 	}
 
-	conf, err := ini.LoadFile(cfgFilePath)
+	conf, err := ini.Load(cfgFilePath)
 	if err != nil {
 		return err
 	}

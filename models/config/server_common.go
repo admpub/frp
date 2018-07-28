@@ -15,11 +15,13 @@
 package config
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"strconv"
 	"strings"
 
-	ini "github.com/vaughan0/go-ini"
+	"github.com/admpub/ini"
 
 	"github.com/admpub/frp/utils/util"
 )
@@ -111,22 +113,21 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 		cfg = GetDefaultServerConf()
 	}
 
-	conf, err := ini.Load(strings.NewReader(content))
+	conf, err := ini.Load(ioutil.NopCloser(bytes.NewBufferString(content)))
 	if err != nil {
 		err = fmt.Errorf("parse ini conf file error: %v", err)
 		return nil, err
 	}
 
 	var (
-		tmpStr string
-		ok     bool
-		v      int64
+		v int64
 	)
-	if tmpStr, ok = conf.Get("common", "bind_addr"); ok {
+	commonSection := conf.Section("common")
+	if tmpStr := commonSection.Key("bind_addr").String(); len(tmpStr) > 0 {
 		cfg.BindAddr = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "bind_port"); ok {
+	if tmpStr := commonSection.Key("bind_port").String(); len(tmpStr) > 0 {
 		if v, err = strconv.ParseInt(tmpStr, 10, 64); err != nil {
 			err = fmt.Errorf("Parse conf error: invalid bind_port")
 			return
@@ -135,7 +136,7 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 		}
 	}
 
-	if tmpStr, ok = conf.Get("common", "bind_udp_port"); ok {
+	if tmpStr := commonSection.Key("bind_udp_port").String(); len(tmpStr) > 0 {
 		if v, err = strconv.ParseInt(tmpStr, 10, 64); err != nil {
 			err = fmt.Errorf("Parse conf error: invalid bind_udp_port")
 			return
@@ -144,7 +145,7 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 		}
 	}
 
-	if tmpStr, ok = conf.Get("common", "kcp_bind_port"); ok {
+	if tmpStr := commonSection.Key("kcp_bind_port").String(); len(tmpStr) > 0 {
 		if v, err = strconv.ParseInt(tmpStr, 10, 64); err != nil {
 			err = fmt.Errorf("Parse conf error: invalid kcp_bind_port")
 			return
@@ -153,13 +154,13 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 		}
 	}
 
-	if tmpStr, ok = conf.Get("common", "proxy_bind_addr"); ok {
+	if tmpStr := commonSection.Key("proxy_bind_addr").String(); len(tmpStr) > 0 {
 		cfg.ProxyBindAddr = tmpStr
 	} else {
 		cfg.ProxyBindAddr = cfg.BindAddr
 	}
 
-	if tmpStr, ok = conf.Get("common", "vhost_http_port"); ok {
+	if tmpStr := commonSection.Key("vhost_http_port").String(); len(tmpStr) > 0 {
 		if v, err = strconv.ParseInt(tmpStr, 10, 64); err != nil {
 			err = fmt.Errorf("Parse conf error: invalid vhost_http_port")
 			return
@@ -170,7 +171,7 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 		cfg.VhostHttpPort = 0
 	}
 
-	if tmpStr, ok = conf.Get("common", "vhost_https_port"); ok {
+	if tmpStr := commonSection.Key("vhost_https_port").String(); len(tmpStr) > 0 {
 		if v, err = strconv.ParseInt(tmpStr, 10, 64); err != nil {
 			err = fmt.Errorf("Parse conf error: invalid vhost_https_port")
 			return
@@ -181,13 +182,13 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 		cfg.VhostHttpsPort = 0
 	}
 
-	if tmpStr, ok = conf.Get("common", "dashboard_addr"); ok {
+	if tmpStr := commonSection.Key("dashboard_addr").String(); len(tmpStr) > 0 {
 		cfg.DashboardAddr = tmpStr
 	} else {
 		cfg.DashboardAddr = cfg.BindAddr
 	}
 
-	if tmpStr, ok = conf.Get("common", "dashboard_port"); ok {
+	if tmpStr := commonSection.Key("dashboard_port").String(); len(tmpStr) > 0 {
 		if v, err = strconv.ParseInt(tmpStr, 10, 64); err != nil {
 			err = fmt.Errorf("Parse conf error: invalid dashboard_port")
 			return
@@ -198,19 +199,19 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 		cfg.DashboardPort = 0
 	}
 
-	if tmpStr, ok = conf.Get("common", "dashboard_user"); ok {
+	if tmpStr := commonSection.Key("dashboard_user").String(); len(tmpStr) > 0 {
 		cfg.DashboardUser = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "dashboard_pwd"); ok {
+	if tmpStr := commonSection.Key("dashboard_pwd").String(); len(tmpStr) > 0 {
 		cfg.DashboardPwd = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "assets_dir"); ok {
+	if tmpStr := commonSection.Key("assets_dir").String(); len(tmpStr) > 0 {
 		cfg.AssetsDir = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "log_file"); ok {
+	if tmpStr := commonSection.Key("log_file").String(); len(tmpStr) > 0 {
 		cfg.LogFile = tmpStr
 		if cfg.LogFile == "console" {
 			cfg.LogWay = "console"
@@ -219,20 +220,20 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 		}
 	}
 
-	if tmpStr, ok = conf.Get("common", "log_level"); ok {
+	if tmpStr := commonSection.Key("log_level").String(); len(tmpStr) > 0 {
 		cfg.LogLevel = tmpStr
 	}
 
-	if tmpStr, ok = conf.Get("common", "log_max_days"); ok {
+	if tmpStr := commonSection.Key("log_max_days").String(); len(tmpStr) > 0 {
 		v, err = strconv.ParseInt(tmpStr, 10, 64)
 		if err == nil {
 			cfg.LogMaxDays = v
 		}
 	}
 
-	cfg.Token, _ = conf.Get("common", "token")
+	cfg.Token = commonSection.Key("token").String()
 
-	if allowPortsStr, ok := conf.Get("common", "allow_ports"); ok {
+	if allowPortsStr := commonSection.Key("allow_ports").String(); len(allowPortsStr) > 0 {
 		// e.g. 1000-2000,2001,2002,3000-4000
 		ports, errRet := util.ParseRangeNumbers(allowPortsStr)
 		if errRet != nil {
@@ -245,7 +246,7 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 		}
 	}
 
-	if tmpStr, ok = conf.Get("common", "max_pool_count"); ok {
+	if tmpStr := commonSection.Key("max_pool_count").String(); len(tmpStr) > 0 {
 		if v, err = strconv.ParseInt(tmpStr, 10, 64); err != nil {
 			err = fmt.Errorf("Parse conf error: invalid max_pool_count")
 			return
@@ -258,7 +259,7 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 		}
 	}
 
-	if tmpStr, ok = conf.Get("common", "max_ports_per_client"); ok {
+	if tmpStr := commonSection.Key("max_ports_per_client").String(); len(tmpStr) > 0 {
 		if v, err = strconv.ParseInt(tmpStr, 10, 64); err != nil {
 			err = fmt.Errorf("Parse conf error: invalid max_ports_per_client")
 			return
@@ -271,7 +272,7 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 		}
 	}
 
-	if tmpStr, ok = conf.Get("common", "authentication_timeout"); ok {
+	if tmpStr := commonSection.Key("authentication_timeout").String(); len(tmpStr) > 0 {
 		v, errRet := strconv.ParseInt(tmpStr, 10, 64)
 		if errRet != nil {
 			err = fmt.Errorf("Parse conf error: authentication_timeout is incorrect")
@@ -281,17 +282,17 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 		}
 	}
 
-	if tmpStr, ok = conf.Get("common", "subdomain_host"); ok {
+	if tmpStr := commonSection.Key("subdomain_host").String(); len(tmpStr) > 0 {
 		cfg.SubDomainHost = strings.ToLower(strings.TrimSpace(tmpStr))
 	}
 
-	if tmpStr, ok = conf.Get("common", "tcp_mux"); ok && tmpStr == "false" {
+	if tmpStr := commonSection.Key("tcp_mux").String(); tmpStr == "false" {
 		cfg.TcpMux = false
 	} else {
 		cfg.TcpMux = true
 	}
 
-	if tmpStr, ok = conf.Get("common", "heartbeat_timeout"); ok {
+	if tmpStr := commonSection.Key("heartbeat_timeout").String(); len(tmpStr) > 0 {
 		v, errRet := strconv.ParseInt(tmpStr, 10, 64)
 		if errRet != nil {
 			err = fmt.Errorf("Parse conf error: heartbeat_timeout is incorrect")
