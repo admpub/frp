@@ -139,11 +139,6 @@
   version = "v1.1"
 
 [[projects]]
-  name = "github.com/vaughan0/go-ini"
-  packages = ["."]
-  revision = "a98ad7ee00ec53921f08832bc06ecf7fd600e6a1"
-
-[[projects]]
   name = "golang.org/x/crypto"
   packages = [
     "blowfish",
