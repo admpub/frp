@@ -15,20 +15,29 @@ func NewRouteGroup(prefix string, e *echo.Echo) *echo.Group {
 	g.Get("/api/serverinfo", apiServerInfo)
 	g.Get("/api/proxy/:type", func(ctx echo.Context) error {
 		r := ctx.Request().StdRequest()
-		r.WithContext(context.WithValue(r.Context(), `type`, ctx.Param(`type`)))
+		v := map[string]string{
+			`type`: ctx.Param(`type`),
+		}
+		r.WithContext(context.WithValue(r.Context(), 0, v))
 		apiProxyByType(ctx.Response().StdResponseWriter(), r)
 		return nil
 	})
 	g.Get("/api/proxy/:type/:name", func(ctx echo.Context) error {
 		r := ctx.Request().StdRequest()
-		r.WithContext(context.WithValue(r.Context(), `type`, ctx.Param(`type`)))
-		r.WithContext(context.WithValue(r.Context(), `name`, ctx.Param(`name`)))
+		v := map[string]string{
+			`type`: ctx.Param(`type`),
+			`name`: ctx.Param(`name`),
+		}
+		r.WithContext(context.WithValue(r.Context(), 0, v))
 		apiProxyByTypeAndName(ctx.Response().StdResponseWriter(), r)
 		return nil
 	})
 	g.Get("/api/traffic/:name", func(ctx echo.Context) error {
 		r := ctx.Request().StdRequest()
-		r.WithContext(context.WithValue(r.Context(), `name`, ctx.Param(`name`)))
+		v := map[string]string{
+			`name`: ctx.Param(`name`),
+		}
+		r.WithContext(context.WithValue(r.Context(), 0, v))
 		apiProxyTraffic(ctx.Response().StdResponseWriter(), r)
 		return nil
 	})
