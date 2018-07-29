@@ -61,8 +61,8 @@ func APIProxyTraffic(c echo.Context) error {
 	return c.JSON(res)
 }
 
-// NewRouteGroup 为echo框架创建路由组
-func NewRouteGroup(router echo.RouteRegister) {
+// RegisterTo 为echo框架创建路由
+func RegisterTo(router echo.RouteRegister) {
 	// api
 	router.Get("/api/serverinfo", APIServerInfo)
 	router.Get("/api/proxy/:type", APIProxyByType)

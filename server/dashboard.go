@@ -40,7 +40,7 @@ func RunDashboardServer(addr string, port int) (err error) {
 			return user == g.GlbServerCfg.DashboardUser && passwd == g.GlbServerCfg.DashboardPwd
 		}))
 	}
-	NewRouteGroup(e)
+	RegisterTo(e)
 	// view
 	e.Get("/favicon.ico", func(c echo.Context) error {
 		return c.File(c.Path(), assets.FileSystem)

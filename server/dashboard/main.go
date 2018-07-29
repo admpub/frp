@@ -14,6 +14,6 @@ func main() {
 	e.Use(middleware.Log())
 	e.RouteDebug = true
 	g := e.Group(`/frp`)
-	server.NewRouteGroup(g)
+	server.RegisterTo(g)
 	e.Run(standard.New(`:4444`))
 }
