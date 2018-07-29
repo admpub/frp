@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/admpub/frp/assets"
-	frpNet "github.com/admpub/frp/utils/net"
 	"github.com/webx-top/echo"
 )
 
@@ -35,7 +34,7 @@ func NewRouteGroup(prefix string, e *echo.Echo) *echo.Group {
 	})
 
 	// view
-	g.Get("/static/", frpNet.MakeHttpGzipHandler(http.StripPrefix(prefix+"/static/", http.FileServer(assets.FileSystem))))
+	g.Get("/static/", http.StripPrefix(prefix+"/static/", http.FileServer(assets.FileSystem)))
 
 	g.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "./static/", http.StatusMovedPermanently)
