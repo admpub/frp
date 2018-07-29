@@ -62,16 +62,15 @@ func APIProxyTraffic(c echo.Context) error {
 }
 
 // NewRouteGroup 为echo框架创建路由组
-func NewRouteGroup(prefix string, e *echo.Echo) *echo.Group {
-	group := e.Group(prefix)
+func NewRouteGroup(router echo.RouteRegister) {
 	// api
-	group.Get("/api/serverinfo", APIServerInfo)
-	group.Get("/api/proxy/:type", APIProxyByType)
-	group.Get("/api/proxy/:type/:name", APIProxyByTypeAndName)
-	group.Get("/api/traffic/:name", APIProxyTraffic)
+	router.Get("/api/serverinfo", APIServerInfo)
+	router.Get("/api/proxy/:type", APIProxyByType)
+	router.Get("/api/proxy/:type/:name", APIProxyByTypeAndName)
+	router.Get("/api/traffic/:name", APIProxyTraffic)
 
 	// view
-	group.Get("/", func(c echo.Context) error {
+	router.Get("/", func(c echo.Context) error {
 		return c.Redirect("./static/")
 	})
 	cfg := &g.GlbServerCfg.ServerCommonConf
@@ -80,9 +79,8 @@ func NewRouteGroup(prefix string, e *echo.Echo) *echo.Group {
 	if err != nil {
 		panic(err)
 	}
-	group.Get("/static*", func(c echo.Context) error {
+	router.Get("/static*", func(c echo.Context) error {
 		file := c.Param(`*`)
 		return c.File(file, assets.FileSystem)
 	})
-	return group
 }
