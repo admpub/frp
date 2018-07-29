@@ -144,7 +144,7 @@ func getConfByType(proxyType string) interface{} {
 	}
 }
 
-// Get proxy info.
+// ProxyStatsInfo Get proxy info.
 type ProxyStatsInfo struct {
 	Name            string      `json:"name"`
 	Conf            interface{} `json:"conf"`
@@ -215,7 +215,7 @@ func getProxyStatsByType(proxyType string) (proxyInfos []*ProxyStatsInfo) {
 	return
 }
 
-// Get proxy info by name.
+// GetProxyStatsResp Get proxy info by name.
 type GetProxyStatsResp struct {
 	GeneralResponse
 
