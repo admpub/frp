@@ -15,14 +15,13 @@
 package client
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/http"
 	"sort"
 	"strings"
 
 	"github.com/admpub/ini"
+	"github.com/webx-top/echo"
 
 	"github.com/admpub/frp/g"
 	"github.com/admpub/frp/models/config"
@@ -39,15 +38,11 @@ type ReloadResp struct {
 	GeneralResponse
 }
 
-func (svr *Service) apiReload(w http.ResponseWriter, r *http.Request) {
-	var (
-		buf []byte
-		res ReloadResp
-	)
+func (svr *Service) apiReload(c echo.Context) (err error) {
+	var res ReloadResp
 	defer func() {
 		log.Info("Http response [/api/reload]: code [%d]", res.Code)
-		buf, _ = json.Marshal(&res)
-		w.Write(buf)
+		err = c.JSON(&res)
 	}()
 
 	log.Info("Http request: [/api/reload]")
@@ -175,11 +170,8 @@ func NewProxyStatusResp(status *ProxyStatus) ProxyStatusResp {
 }
 
 // api/status
-func (svr *Service) apiStatus(w http.ResponseWriter, r *http.Request) {
-	var (
-		buf []byte
-		res StatusResp
-	)
+func (svr *Service) apiStatus(c echo.Context) (err error) {
+	var res StatusResp
 	res.Tcp = make([]ProxyStatusResp, 0)
 	res.Udp = make([]ProxyStatusResp, 0)
 	res.Http = make([]ProxyStatusResp, 0)
@@ -188,8 +180,7 @@ func (svr *Service) apiStatus(w http.ResponseWriter, r *http.Request) {
 	res.Xtcp = make([]ProxyStatusResp, 0)
 	defer func() {
 		log.Info("Http response [/api/status]")
-		buf, _ = json.Marshal(&res)
-		w.Write(buf)
+		err = c.JSON(&res)
 	}()
 
 	log.Info("Http request: [/api/status]")

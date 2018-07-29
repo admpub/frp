@@ -16,15 +16,10 @@ package server
 
 import (
 	"encoding/json"
-	"net/http"
 
-	"github.com/admpub/frp/g"
 	"github.com/admpub/frp/models/config"
 	"github.com/admpub/frp/models/consts"
 	"github.com/admpub/frp/utils/log"
-	"github.com/admpub/frp/utils/version"
-
-	"github.com/gorilla/mux"
 )
 
 type GeneralResponse struct {
@@ -53,42 +48,6 @@ type ServerInfoResp struct {
 	CurConns        int64            `json:"cur_conns"`
 	ClientCounts    int64            `json:"client_counts"`
 	ProxyTypeCounts map[string]int64 `json:"proxy_type_count"`
-}
-
-func apiServerInfo(w http.ResponseWriter, r *http.Request) {
-	var (
-		buf []byte
-		res ServerInfoResp
-	)
-	defer func() {
-		log.Info("Http response [%s]: code [%d]", r.URL.Path, res.Code)
-	}()
-
-	log.Info("Http request: [%s]", r.URL.Path)
-	cfg := &g.GlbServerCfg.ServerCommonConf
-	serverStats := StatsGetServer()
-	res = ServerInfoResp{
-		Version:           version.Full(),
-		BindPort:          cfg.BindPort,
-		BindUdpPort:       cfg.BindUdpPort,
-		VhostHttpPort:     cfg.VhostHttpPort,
-		VhostHttpsPort:    cfg.VhostHttpsPort,
-		KcpBindPort:       cfg.KcpBindPort,
-		AuthTimeout:       cfg.AuthTimeout,
-		SubdomainHost:     cfg.SubDomainHost,
-		MaxPoolCount:      cfg.MaxPoolCount,
-		MaxPortsPerClient: cfg.MaxPortsPerClient,
-		HeartBeatTimeout:  cfg.HeartBeatTimeout,
-
-		TotalTrafficIn:  serverStats.TotalTrafficIn,
-		TotalTrafficOut: serverStats.TotalTrafficOut,
-		CurConns:        serverStats.CurConns,
-		ClientCounts:    serverStats.ClientCounts,
-		ProxyTypeCounts: serverStats.ProxyTypeCounts,
-	}
-	w.Header().Set(`Content-Type`, `application/json;charset=utf-8`)
-	buf, _ = json.Marshal(&res)
-	w.Write(buf)
 }
 
 type BaseOutConf struct {
@@ -161,30 +120,6 @@ type GetProxyInfoResp struct {
 	Proxies []*ProxyStatsInfo `json:"proxies"`
 }
 
-// api/proxy/:type
-func apiProxyByType(w http.ResponseWriter, r *http.Request) {
-	var (
-		buf []byte
-		res GetProxyInfoResp
-	)
-	params := mux.Vars(r)
-	proxyType := params["type"]
-
-	defer func() {
-		log.Info("Http response [%s]: code [%d]", r.URL.Path, res.Code)
-		log.Info(r.URL.Path)
-		log.Info(r.URL.RawPath)
-	}()
-	log.Info("Http request: [%s]", r.URL.Path)
-
-	res.Proxies = getProxyStatsByType(proxyType)
-
-	w.Header().Set(`Content-Type`, `application/json;charset=utf-8`)
-	buf, _ = json.Marshal(&res)
-	w.Write(buf)
-
-}
-
 func getProxyStatsByType(proxyType string) (proxyInfos []*ProxyStatsInfo) {
 	proxyStats := StatsGetProxiesByType(proxyType)
 	proxyInfos = make([]*ProxyStatsInfo, 0, len(proxyStats))
@@ -230,28 +165,6 @@ type GetProxyStatsResp struct {
 	Status          string      `json:"status"`
 }
 
-// api/proxy/:type/:name
-func apiProxyByTypeAndName(w http.ResponseWriter, r *http.Request) {
-	var (
-		buf []byte
-		res GetProxyStatsResp
-	)
-	params := mux.Vars(r)
-	proxyType := params["type"]
-	name := params["name"]
-
-	defer func() {
-		log.Info("Http response [%s]: code [%d]", r.URL.Path, res.Code)
-	}()
-	log.Info("Http request: [%s]", r.URL.Path)
-
-	res = getProxyStatsByTypeAndName(proxyType, name)
-
-	w.Header().Set(`Content-Type`, `application/json;charset=utf-8`)
-	buf, _ = json.Marshal(&res)
-	w.Write(buf)
-}
-
 func getProxyStatsByTypeAndName(proxyType string, proxyName string) (proxyInfo GetProxyStatsResp) {
 	proxyInfo.Name = proxyName
 	ps := StatsGetProxiesByTypeAndName(proxyType, proxyName)
@@ -295,32 +208,4 @@ type GetProxyTrafficResp struct {
 	Name       string  `json:"name"`
 	TrafficIn  []int64 `json:"traffic_in"`
 	TrafficOut []int64 `json:"traffic_out"`
-}
-
-func apiProxyTraffic(w http.ResponseWriter, r *http.Request) {
-	var (
-		buf []byte
-		res GetProxyTrafficResp
-	)
-	params := mux.Vars(r)
-	name := params["name"]
-
-	defer func() {
-		log.Info("Http response [%s]: code [%d]", r.URL.Path, res.Code)
-	}()
-	log.Info("Http request: [%s]", r.URL.Path)
-
-	res.Name = name
-	proxyTrafficInfo := StatsGetProxyTraffic(name)
-	if proxyTrafficInfo == nil {
-		res.Code = 1
-		res.Msg = "no proxy info found"
-	} else {
-		res.TrafficIn = proxyTrafficInfo.TrafficIn
-		res.TrafficOut = proxyTrafficInfo.TrafficOut
-	}
-
-	w.Header().Set(`Content-Type`, `application/json;charset=utf-8`)
-	buf, _ = json.Marshal(&res)
-	w.Write(buf)
 }

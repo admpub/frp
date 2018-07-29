@@ -16,15 +16,14 @@ package server
 
 import (
 	"fmt"
-	"net"
-	"net/http"
 	"time"
 
 	"github.com/admpub/frp/assets"
 	"github.com/admpub/frp/g"
-	frpNet "github.com/admpub/frp/utils/net"
-
-	"github.com/gorilla/mux"
+	"github.com/webx-top/echo"
+	"github.com/webx-top/echo/engine"
+	"github.com/webx-top/echo/engine/standard"
+	"github.com/webx-top/echo/middleware"
 )
 
 var (
@@ -34,40 +33,25 @@ var (
 
 func RunDashboardServer(addr string, port int) (err error) {
 	// url router
-	router := mux.NewRouter()
-
-	user, passwd := g.GlbServerCfg.DashboardUser, g.GlbServerCfg.DashboardPwd
-	router.Use(frpNet.NewHttpAuthMiddleware(user, passwd).Middleware)
-
-	// api, see dashboard_api.go
-	router.HandleFunc("/api/serverinfo", apiServerInfo).Methods("GET")
-	router.HandleFunc("/api/proxy/{type}", apiProxyByType).Methods("GET")
-	router.HandleFunc("/api/proxy/{type}/{name}", apiProxyByTypeAndName).Methods("GET")
-	router.HandleFunc("/api/traffic/{name}", apiProxyTraffic).Methods("GET")
-
+	e := echo.New()
+	e.Use(middleware.Log(), middleware.Recover(), middleware.Gzip())
+	if len(g.GlbServerCfg.DashboardUser) > 0 && len(g.GlbServerCfg.DashboardPwd) > 0 {
+		e.Use(middleware.BasicAuth(func(user string, passwd string) bool {
+			return user == g.GlbServerCfg.DashboardUser && passwd == g.GlbServerCfg.DashboardPwd
+		}))
+	}
+	NewRouteGroup(``, e)
 	// view
-	router.Handle("/favicon.ico", http.FileServer(assets.FileSystem)).Methods("GET")
-	router.PathPrefix("/static/").Handler(frpNet.MakeHttpGzipHandler(http.StripPrefix("/static/", http.FileServer(assets.FileSystem)))).Methods("GET")
-
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "/static/", http.StatusMovedPermanently)
+	e.Get("/favicon.ico", func(c echo.Context) error {
+		return c.File(c.Path(), assets.FileSystem)
 	})
 
 	address := fmt.Sprintf("%s:%d", addr, port)
-	server := &http.Server{
-		Addr:         address,
-		Handler:      router,
+	cfg := &engine.Config{
+		Address:      address,
 		ReadTimeout:  httpServerReadTimeout,
 		WriteTimeout: httpServerWriteTimeout,
 	}
-	if address == "" {
-		address = ":http"
-	}
-	ln, err := net.Listen("tcp", address)
-	if err != nil {
-		return err
-	}
-
-	go server.Serve(ln)
+	go e.Run(standard.NewWithConfig(cfg))
 	return
 }

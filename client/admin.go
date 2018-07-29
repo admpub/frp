@@ -16,14 +16,13 @@ package client
 
 import (
 	"fmt"
-	"net"
-	"net/http"
 	"time"
 
 	"github.com/admpub/frp/g"
-	frpNet "github.com/admpub/frp/utils/net"
-
-	"github.com/gorilla/mux"
+	"github.com/webx-top/echo"
+	"github.com/webx-top/echo/engine"
+	"github.com/webx-top/echo/engine/standard"
+	"github.com/webx-top/echo/middleware"
 )
 
 var (
@@ -32,31 +31,21 @@ var (
 )
 
 func (svr *Service) RunAdminServer(addr string, port int) (err error) {
-	// url router
-	router := mux.NewRouter()
-
-	user, passwd := g.GlbClientCfg.AdminUser, g.GlbClientCfg.AdminPwd
-	router.Use(frpNet.NewHttpAuthMiddleware(user, passwd).Middleware)
-
-	// api, see dashboard_api.go
-	router.HandleFunc("/api/reload", svr.apiReload).Methods("GET")
-	router.HandleFunc("/api/status", svr.apiStatus).Methods("GET")
-
+	e := echo.New()
+	e.Use(middleware.Log(), middleware.Recover())
+	if len(g.GlbClientCfg.AdminUser) > 0 && len(g.GlbClientCfg.AdminPwd) > 0 {
+		e.Use(middleware.BasicAuth(func(user string, passwd string) bool {
+			return user == g.GlbClientCfg.AdminUser && passwd == g.GlbClientCfg.AdminPwd
+		}))
+	}
+	e.Get("/api/reload", svr.apiReload)
+	e.Get("/api/status", svr.apiStatus)
 	address := fmt.Sprintf("%s:%d", addr, port)
-	server := &http.Server{
-		Addr:         address,
-		Handler:      router,
+	cfg := &engine.Config{
+		Address:      address,
 		ReadTimeout:  httpServerReadTimeout,
 		WriteTimeout: httpServerWriteTimeout,
 	}
-	if address == "" {
-		address = ":http"
-	}
-	ln, err := net.Listen("tcp", address)
-	if err != nil {
-		return err
-	}
-
-	go server.Serve(ln)
+	go e.Run(standard.NewWithConfig(cfg))
 	return
 }

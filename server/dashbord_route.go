@@ -1,52 +1,88 @@
 package server
 
 import (
-	"context"
-	"net/http"
-
 	"github.com/admpub/frp/assets"
+	"github.com/admpub/frp/g"
+	"github.com/admpub/frp/utils/version"
 	"github.com/webx-top/echo"
 )
 
+func APIServerInfo(c echo.Context) error {
+	cfg := &g.GlbServerCfg.ServerCommonConf
+	serverStats := StatsGetServer()
+	res := ServerInfoResp{
+		Version:           version.Full(),
+		BindPort:          cfg.BindPort,
+		BindUdpPort:       cfg.BindUdpPort,
+		VhostHttpPort:     cfg.VhostHttpPort,
+		VhostHttpsPort:    cfg.VhostHttpsPort,
+		KcpBindPort:       cfg.KcpBindPort,
+		AuthTimeout:       cfg.AuthTimeout,
+		SubdomainHost:     cfg.SubDomainHost,
+		MaxPoolCount:      cfg.MaxPoolCount,
+		MaxPortsPerClient: cfg.MaxPortsPerClient,
+		HeartBeatTimeout:  cfg.HeartBeatTimeout,
+
+		TotalTrafficIn:  serverStats.TotalTrafficIn,
+		TotalTrafficOut: serverStats.TotalTrafficOut,
+		CurConns:        serverStats.CurConns,
+		ClientCounts:    serverStats.ClientCounts,
+		ProxyTypeCounts: serverStats.ProxyTypeCounts,
+	}
+	return c.JSON(res)
+}
+
+func APIProxyByType(c echo.Context) error {
+	var res GetProxyInfoResp
+	proxyType := c.Param(`type`)
+	res.Proxies = getProxyStatsByType(proxyType)
+	return c.JSON(res)
+}
+
+func APIProxyByTypeAndName(c echo.Context) error {
+	proxyType := c.Param(`type`)
+	name := c.Param(`name`)
+	res := getProxyStatsByTypeAndName(proxyType, name)
+	return c.JSON(res)
+}
+
+func APIProxyTraffic(c echo.Context) error {
+	var res GetProxyTrafficResp
+	res.Name = c.Param(`name`)
+	proxyTrafficInfo := StatsGetProxyTraffic(res.Name)
+	if proxyTrafficInfo == nil {
+		res.Code = 1
+		res.Msg = "no proxy info found"
+	} else {
+		res.TrafficIn = proxyTrafficInfo.TrafficIn
+		res.TrafficOut = proxyTrafficInfo.TrafficOut
+	}
+
+	return c.JSON(res)
+}
+
 // NewRouteGroup 为echo框架创建路由组
 func NewRouteGroup(prefix string, e *echo.Echo) *echo.Group {
-	g := e.Group(prefix)
-	// api, see dashboard_api.go
-	g.Get("/api/serverinfo", apiServerInfo)
-	g.Get("/api/proxy/:type", func(ctx echo.Context) error {
-		r := ctx.Request().StdRequest()
-		v := map[string]string{
-			`type`: ctx.Param(`type`),
-		}
-		r.WithContext(context.WithValue(r.Context(), 0, v))
-		apiProxyByType(ctx.Response().StdResponseWriter(), r)
-		return nil
-	})
-	g.Get("/api/proxy/:type/:name", func(ctx echo.Context) error {
-		r := ctx.Request().StdRequest()
-		v := map[string]string{
-			`type`: ctx.Param(`type`),
-			`name`: ctx.Param(`name`),
-		}
-		r.WithContext(context.WithValue(r.Context(), 0, v))
-		apiProxyByTypeAndName(ctx.Response().StdResponseWriter(), r)
-		return nil
-	})
-	g.Get("/api/traffic/:name", func(ctx echo.Context) error {
-		r := ctx.Request().StdRequest()
-		v := map[string]string{
-			`name`: ctx.Param(`name`),
-		}
-		r.WithContext(context.WithValue(r.Context(), 0, v))
-		apiProxyTraffic(ctx.Response().StdResponseWriter(), r)
-		return nil
-	})
+	group := e.Group(prefix)
+	// api
+	group.Get("/api/serverinfo", APIServerInfo)
+	group.Get("/api/proxy/:type", APIProxyByType)
+	group.Get("/api/proxy/:type/:name", APIProxyByTypeAndName)
+	group.Get("/api/traffic/:name", APIProxyTraffic)
 
 	// view
-	g.Get("/static/", http.StripPrefix(prefix+"/static/", http.FileServer(assets.FileSystem)))
-
-	g.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "./static/", http.StatusMovedPermanently)
+	group.Get("/", func(c echo.Context) error {
+		return c.Redirect("./static/")
 	})
-	return g
+	cfg := &g.GlbServerCfg.ServerCommonConf
+	//cfg.AssetsDir = `/Users/hank/go/src/github.com/admpub/frp/assets/static`
+	err := assets.Load(cfg.AssetsDir)
+	if err != nil {
+		panic(err)
+	}
+	group.Get("/static*", func(c echo.Context) error {
+		file := c.Param(`*`)
+		return c.File(file, assets.FileSystem)
+	})
+	return group
 }
