@@ -86,7 +86,7 @@ func apiServerInfo(w http.ResponseWriter, r *http.Request) {
 		ClientCounts:    serverStats.ClientCounts,
 		ProxyTypeCounts: serverStats.ProxyTypeCounts,
 	}
-
+	w.Header().Set(`Content-Type`, `application/json;charset=utf-8`)
 	buf, _ = json.Marshal(&res)
 	w.Write(buf)
 }
@@ -179,6 +179,7 @@ func apiProxyByType(w http.ResponseWriter, r *http.Request) {
 
 	res.Proxies = getProxyStatsByType(proxyType)
 
+	w.Header().Set(`Content-Type`, `application/json;charset=utf-8`)
 	buf, _ = json.Marshal(&res)
 	w.Write(buf)
 
@@ -246,6 +247,7 @@ func apiProxyByTypeAndName(w http.ResponseWriter, r *http.Request) {
 
 	res = getProxyStatsByTypeAndName(proxyType, name)
 
+	w.Header().Set(`Content-Type`, `application/json;charset=utf-8`)
 	buf, _ = json.Marshal(&res)
 	w.Write(buf)
 }
@@ -318,6 +320,7 @@ func apiProxyTraffic(w http.ResponseWriter, r *http.Request) {
 		res.TrafficOut = proxyTrafficInfo.TrafficOut
 	}
 
+	w.Header().Set(`Content-Type`, `application/json;charset=utf-8`)
 	buf, _ = json.Marshal(&res)
 	w.Write(buf)
 }
