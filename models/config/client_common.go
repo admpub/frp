@@ -15,9 +15,7 @@
 package config
 
 import (
-	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -82,7 +80,7 @@ func UnmarshalClientConfFromIni(defaultCfg *ClientCommonConf, content string) (c
 		cfg = GetDefaultClientConf()
 	}
 
-	conf, err := ini.Load(ioutil.NopCloser(bytes.NewBufferString(content)))
+	conf, err := ini.LoadContent(content)
 	if err != nil {
 		err = fmt.Errorf("parse ini conf file error: %v", err)
 		return nil, err

@@ -848,7 +848,7 @@ func ParseRangeSection(name string, section *ini.Section) (sections map[string]*
 func LoadProxyConfFromIni(prefix string, conf *ini.File, startProxy map[string]struct{}) (
 	proxyConfs map[string]ProxyConf, visitorConfs map[string]ProxyConf, err error) {
 
-	if prefix != "" {
+	if len(prefix) > 0 {
 		prefix += "."
 	}
 
