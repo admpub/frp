@@ -18,6 +18,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -138,7 +139,7 @@ func (rp *HttpReverseProxy) CreateConnection(domain string, location string) (ne
 			return fn()
 		}
 	}
-	return nil, ErrNoDomain
+	return nil, fmt.Errorf(ErrNoDomain.Error()+`: %s`, domain)
 }
 
 func (rp *HttpReverseProxy) CheckAuth(domain, location, user, passwd string) bool {
