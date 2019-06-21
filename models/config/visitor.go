@@ -37,7 +37,7 @@ func init() {
 type VisitorConf interface {
 	GetBaseInfo() *BaseVisitorConf
 	Compare(cmp VisitorConf) bool
-	UnmarshalFromIni(prefix string, name string, section ini.Section) error
+	UnmarshalFromIni(prefix string, name string, section *ini.Section) error
 	Check() error
 }
 
@@ -50,8 +50,8 @@ func NewVisitorConfByType(cfgType string) VisitorConf {
 	return cfg
 }
 
-func NewVisitorConfFromIni(prefix string, name string, section *ini.File) (cfg VisitorConf, err error) {
-	cfgType := section["type"]
+func NewVisitorConfFromIni(prefix string, name string, section *ini.Section) (cfg VisitorConf, err error) {
+	cfgType := section.Key("type").String()
 	if cfgType == "" {
 		err = fmt.Errorf("visitor [%s] type shouldn't be empty", name)
 		return
@@ -117,32 +117,31 @@ func (cfg *BaseVisitorConf) check() (err error) {
 	return
 }
 
-func (cfg *BaseVisitorConf) UnmarshalFromIni(prefix string, name string, section ini.Section) (err error) {
+func (cfg *BaseVisitorConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) (err error) {
 	var (
 		tmpStr string
-		ok     bool
 	)
 	cfg.ProxyName = prefix + name
-	cfg.ProxyType = section["type"]
+	cfg.ProxyType = section.Key("type").String()
 
-	if tmpStr, ok = section["use_encryption"]; ok && tmpStr == "true" {
+	if tmpStr = section.Key("use_encryption").String(); tmpStr == "true" {
 		cfg.UseEncryption = true
 	}
-	if tmpStr, ok = section["use_compression"]; ok && tmpStr == "true" {
+	if tmpStr = section.Key("use_compression").String(); tmpStr == "true" {
 		cfg.UseCompression = true
 	}
 
-	cfg.Role = section["role"]
+	cfg.Role = section.Key("role").String()
 	if cfg.Role != "visitor" {
 		return fmt.Errorf("Parse conf error: proxy [%s] incorrect role [%s]", name, cfg.Role)
 	}
-	cfg.Sk = section["sk"]
-	cfg.ServerName = prefix + section["server_name"]
-	if cfg.BindAddr = section["bind_addr"]; cfg.BindAddr == "" {
+	cfg.Sk = section.Key("sk").String()
+	cfg.ServerName = prefix + section.Key("server_name").String()
+	if cfg.BindAddr = section.Key("bind_addr").String(); cfg.BindAddr == "" {
 		cfg.BindAddr = "127.0.0.1"
 	}
 
-	if tmpStr, ok = section["bind_port"]; ok {
+	if tmpStr = section.Key("bind_port").String(); len(tmpStr) > 0 {
 		if cfg.BindPort, err = strconv.Atoi(tmpStr); err != nil {
 			return fmt.Errorf("Parse conf error: proxy [%s] bind_port incorrect", name)
 		}
@@ -168,7 +167,7 @@ func (cfg *StcpVisitorConf) Compare(cmp VisitorConf) bool {
 	return true
 }
 
-func (cfg *StcpVisitorConf) UnmarshalFromIni(prefix string, name string, section ini.Section) (err error) {
+func (cfg *StcpVisitorConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) (err error) {
 	if err = cfg.BaseVisitorConf.UnmarshalFromIni(prefix, name, section); err != nil {
 		return
 	}
@@ -198,7 +197,7 @@ func (cfg *XtcpVisitorConf) Compare(cmp VisitorConf) bool {
 	return true
 }
 
-func (cfg *XtcpVisitorConf) UnmarshalFromIni(prefix string, name string, section ini.Section) (err error) {
+func (cfg *XtcpVisitorConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) (err error) {
 	if err = cfg.BaseVisitorConf.UnmarshalFromIni(prefix, name, section); err != nil {
 		return
 	}

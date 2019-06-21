@@ -910,7 +910,7 @@ func ParseRangeSection(name string, section *ini.Section) (sections map[string]*
 // LoadProxyConfFromIni if len(startProxy) is 0, start all
 // otherwise just start proxies in startProxy map
 func LoadProxyConfFromIni(prefix string, conf *ini.File, startProxy map[string]struct{}) (
-	proxyConfs map[string]ProxyConf, visitorConfs map[string]ProxyConf, err error) {
+	proxyConfs map[string]ProxyConf, visitorConfs map[string]VisitorConf, err error) {
 
 	if len(prefix) > 0 {
 		prefix += "."
@@ -947,9 +947,6 @@ func LoadProxyConfFromIni(prefix string, conf *ini.File, startProxy map[string]s
 		}
 
 		for subName, subSection := range subSections {
-			if subSection["role"] == "" {
-				subSection["role"] = "server"
-			}
 			role := subSection.Key("role").String()
 			if role == "server" {
 				cfg, errRet := NewProxyConfFromIni(prefix, subName, subSection)

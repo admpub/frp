@@ -184,8 +184,7 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 		cfg.VhostHttpsPort = 0
 	}
 
-	
-	if tmpStr := commonSection.Key("vhost_http_timeout").String(); len(tmpStr) > 0  {
+	if tmpStr := commonSection.Key("vhost_http_timeout").String(); len(tmpStr) > 0 {
 		v, errRet := strconv.ParseInt(tmpStr, 10, 64)
 		if errRet != nil || v < 0 {
 			err = fmt.Errorf("Parse conf error: invalid vhost_http_timeout")
@@ -284,17 +283,17 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 			cfg.MaxPortsPerClient = v
 		}
 	}
-
-	if tmpStr := commonSection.Key("authentication_timeout").String(); len(tmpStr) > 0 {
-		v, errRet := strconv.ParseInt(tmpStr, 10, 64)
-		if errRet != nil {
-			err = fmt.Errorf("Parse conf error: authentication_timeout is incorrect")
-			return
-		} else {
-			cfg.AuthTimeout = v
+	/*
+		if tmpStr := commonSection.Key("authentication_timeout").String(); len(tmpStr) > 0 {
+			v, errRet := strconv.ParseInt(tmpStr, 10, 64)
+			if errRet != nil {
+				err = fmt.Errorf("Parse conf error: authentication_timeout is incorrect")
+				return
+			} else {
+				cfg.AuthTimeout = v
+			}
 		}
-	}
-
+	*/
 	if tmpStr := commonSection.Key("subdomain_host").String(); len(tmpStr) > 0 {
 		cfg.SubDomainHost = strings.ToLower(strings.TrimSpace(tmpStr))
 	}
@@ -304,7 +303,6 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 	} else {
 		cfg.TcpMux = true
 	}
-
 
 	if tmpStr := commonSection.Key("custom_404_page").String(); len(tmpStr) > 0 {
 		cfg.Custom404Page = tmpStr

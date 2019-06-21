@@ -22,13 +22,12 @@ import (
 	"sync"
 	"time"
 
+	"github.com/admpub/frp/client/proxy"
 	"github.com/admpub/frp/g"
 	"github.com/admpub/frp/models/config"
 	"github.com/admpub/frp/models/msg"
 	"github.com/admpub/frp/utils/log"
 	frpNet "github.com/admpub/frp/utils/net"
-	"github.com/admpub/frp/utils/util"
-	"github.com/admpub/frp/utils/version"
 
 	"github.com/fatedier/golib/control/shutdown"
 	"github.com/fatedier/golib/crypto"
