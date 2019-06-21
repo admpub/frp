@@ -26,8 +26,7 @@ import (
 	"sync"
 	"time"
 
-	frpNet "github.com/admpub/frp/utils/net"
-
+	frpLog "github.com/admpub/frp/utils/log"
 	"github.com/fatedier/golib/pool"
 )
 
