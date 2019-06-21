@@ -7,9 +7,9 @@ import (
 	"github.com/webx-top/echo"
 )
 
-func APIServerInfo(c echo.Context) error {
+func (svr *Service) APIServerInfo(c echo.Context) error {
 	cfg := &g.GlbServerCfg.ServerCommonConf
-	serverStats := StatsGetServer()
+	serverStats := svr.statsCollector.GetServer()
 	res := ServerInfoResp{
 		Version:           version.Full(),
 		BindPort:          cfg.BindPort,
@@ -17,7 +17,6 @@ func APIServerInfo(c echo.Context) error {
 		VhostHttpPort:     cfg.VhostHttpPort,
 		VhostHttpsPort:    cfg.VhostHttpsPort,
 		KcpBindPort:       cfg.KcpBindPort,
-		AuthTimeout:       cfg.AuthTimeout,
 		SubdomainHost:     cfg.SubDomainHost,
 		MaxPoolCount:      cfg.MaxPoolCount,
 		MaxPortsPerClient: cfg.MaxPortsPerClient,

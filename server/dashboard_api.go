@@ -16,10 +16,14 @@ package server
 
 import (
 	"encoding/json"
+	"net/http"
 
+	"github.com/admpub/frp/g"
 	"github.com/admpub/frp/models/config"
 	"github.com/admpub/frp/models/consts"
 	"github.com/admpub/frp/utils/log"
+	"github.com/admpub/frp/utils/version"
+	"github.com/webx-top/echo"
 )
 
 type GeneralResponse struct {
@@ -153,25 +157,19 @@ type GetProxyInfoResp struct {
 }
 
 // api/proxy/:type
-func (svr *Service) ApiProxyByType(w http.ResponseWriter, r *http.Request) {
+func (svr *Service) ApiProxyByType(c echo.Context) error {
 	res := GeneralResponse{Code: 200}
-	params := mux.Vars(r)
-	proxyType := params["type"]
+	proxyType := c.Param("type")
 
-	defer func() {
-		log.Info("Http response [%s]: code [%d]", r.URL.Path, res.Code)
-		w.WriteHeader(res.Code)
-		if len(res.Msg) > 0 {
-			w.Write([]byte(res.Msg))
-		}
-	}()
-	log.Info("Http request: [%s]", r.URL.Path)
+	log.Info("Http request: [%s]", c.Request().URL().Path())
 
 	proxyInfoResp := GetProxyInfoResp{}
 	proxyInfoResp.Proxies = svr.getProxyStatsByType(proxyType)
 
 	buf, _ := json.Marshal(&proxyInfoResp)
 	res.Msg = string(buf)
+	log.Info("Http response [%s]: code [%d]", c.Request().URL().Path(), res.Code)
+	return c.String(res.Msg, res.Code)
 }
 
 func (svr *Service) getProxyStatsByType(proxyType string) (proxyInfos []*ProxyStatsInfo) {
@@ -218,24 +216,23 @@ type GetProxyStatsResp struct {
 }
 
 // api/proxy/:type/:name
-func (svr *Service) ApiProxyByTypeAndName(c echo.Context) {
+func (svr *Service) ApiProxyByTypeAndName(c echo.Context) error {
 	res := GeneralResponse{Code: 200}
-	params := mux.Vars(r)
 	proxyType := c.Param("type")
 	name := c.Param("name")
 
-	log.Info("Http request: [%s]", r.URL.Path)
+	log.Info("Http request: [%s]", c.Request().URL().Path())
 
 	proxyStatsResp := GetProxyStatsResp{}
 	proxyStatsResp, res.Code, res.Msg = svr.getProxyStatsByTypeAndName(proxyType, name)
 	if res.Code != 200 {
-		return
+		return c.String(res.Msg, res.Code)
 	}
 
 	buf, _ := json.Marshal(&proxyStatsResp)
 	res.Msg = string(buf)
-	log.Info("Http response [%s]: code [%d]",c.Request().URL().Path(), res.Code)
-	return c.String(res.Msg,res.Code)
+	log.Info("Http response [%s]: code [%d]", c.Request().URL().Path(), res.Code)
+	return c.String(res.Msg, res.Code)
 }
 
 func (svr *Service) getProxyStatsByTypeAndName(proxyType string, proxyName string) (proxyInfo GetProxyStatsResp, code int, msg string) {
@@ -282,10 +279,10 @@ type GetProxyTrafficResp struct {
 	TrafficOut []int64 `json:"traffic_out"`
 }
 
-func (svr *Service) ApiProxyTraffic(c echo.Context) {
+func (svr *Service) ApiProxyTraffic(c echo.Context) error {
 	res := GeneralResponse{Code: 200}
 	name := c.Param("name")
-	log.Info("Http request: [%s]", r.URL.Path)
+	log.Info("Http request: [%s]", c.Request().URL().Path())
 
 	trafficResp := GetProxyTrafficResp{}
 	trafficResp.Name = name
@@ -294,7 +291,7 @@ func (svr *Service) ApiProxyTraffic(c echo.Context) {
 	if proxyTrafficInfo == nil {
 		res.Code = 404
 		res.Msg = "no proxy info found"
-		return
+		return c.String(res.Msg, res.Code)
 	} else {
 		trafficResp.TrafficIn = proxyTrafficInfo.TrafficIn
 		trafficResp.TrafficOut = proxyTrafficInfo.TrafficOut
@@ -303,5 +300,5 @@ func (svr *Service) ApiProxyTraffic(c echo.Context) {
 	buf, _ := json.Marshal(&trafficResp)
 	res.Msg = string(buf)
 	log.Info("Http response [%s]: code [%d]", c.Request().URL().Path(), res.Code)
-	return c.String(res.Msg,res.Code)
+	return c.String(res.Msg, res.Code)
 }
