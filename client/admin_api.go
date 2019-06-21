@@ -68,6 +68,14 @@ func (svr *Service) apiReload(c echo.Context) (err error) {
 		return
 	}
 
+	pxyCfgs, visitorCfgs, err := config.LoadProxyConfFromIni(g.GlbClientCfg.User, conf, newCommonCfg.Start)
+	if err != nil {
+		res.Code = 500
+		res.Msg = err.Error()
+		log.Error("reload frpc proxy config error: %v", err)
+		return
+	}
+
 	err = svr.ReloadConf(pxyCfgs, visitorCfgs)
 	if err != nil {
 		res.Code = 500
