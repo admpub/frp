@@ -163,7 +163,7 @@ func (cfg *BaseProxyConf) UnmarshalFromIni(prefix string, name string, section *
 
 	cfg.Group = section.Key("group").String()
 	cfg.GroupKey = section.Key("group_key").String()
-	cfg.ProxyProtocolVersion = section["proxy_protocol_version"]
+	cfg.ProxyProtocolVersion = section.Key("proxy_protocol_version").String()
 
 	if err := cfg.LocalSvrConf.UnmarshalFromIni(prefix, name, section); err != nil {
 		return err
@@ -414,23 +414,23 @@ func (cfg *HealthCheckConf) compare(cmp *HealthCheckConf) bool {
 	return true
 }
 
-func (cfg *HealthCheckConf) UnmarshalFromIni(prefix string, name string, section ini.Section) (err error) {
-	cfg.HealthCheckType = section["health_check_type"]
-	cfg.HealthCheckUrl = section["health_check_url"]
+func (cfg *HealthCheckConf) UnmarshalFromIni(prefix string, name string, section *ini.Section) (err error) {
+	cfg.HealthCheckType = section.Key("health_check_type").String()
+	cfg.HealthCheckUrl = section.Key("health_check_url").String()
 
-	if tmpStr, ok := section["health_check_timeout_s"]; ok {
+	if tmpStr := section.Key("health_check_timeout_s").String(); len(tmpStr) > 0 {
 		if cfg.HealthCheckTimeoutS, err = strconv.Atoi(tmpStr); err != nil {
 			return fmt.Errorf("Parse conf error: proxy [%s] health_check_timeout_s error", name)
 		}
 	}
 
-	if tmpStr, ok := section["health_check_max_failed"]; ok {
+	if tmpStr := section.Key("health_check_max_failed").String(); len(tmpStr) > 0 {
 		if cfg.HealthCheckMaxFailed, err = strconv.Atoi(tmpStr); err != nil {
 			return fmt.Errorf("Parse conf error: proxy [%s] health_check_max_failed error", name)
 		}
 	}
 
-	if tmpStr, ok := section["health_check_interval_s"]; ok {
+	if tmpStr := section.Key("health_check_interval_s").String(); len(tmpStr) > 0 {
 		if cfg.HealthCheckIntervalS, err = strconv.Atoi(tmpStr); err != nil {
 			return fmt.Errorf("Parse conf error: proxy [%s] health_check_interval_s error", name)
 		}
