@@ -51,7 +51,7 @@ type ServerCommonConf struct {
 	VhostHttpPort int `json:"vhost_http_port"`
 
 	// if VhostHttpsPort equals 0, don't listen a public port for https protocol
-	VhostHttpsPort int `json:"vhost_http_port"`
+	VhostHttpsPort int `json:"vhost_https_port"`
 
 	VhostHttpTimeout int64 `json:"vhost_http_timeout"`
 
@@ -67,9 +67,9 @@ type ServerCommonConf struct {
 	LogLevel      string `json:"log_level"`
 	LogMaxDays    int64  `json:"log_max_days"`
 	Token         string `json:"token"`
-	AuthTimeout   int64  `json:"auth_timeout"`
 	SubDomainHost string `json:"subdomain_host"`
 	TcpMux        bool   `json:"tcp_mux"`
+	Custom404Page string `json:"custom_404_page"`
 
 	AllowPorts        map[int]struct{}
 	MaxPoolCount      int64 `json:"max_pool_count"`
@@ -98,7 +98,6 @@ func GetDefaultServerConf() *ServerCommonConf {
 		LogLevel:          "info",
 		LogMaxDays:        3,
 		Token:             "",
-		AuthTimeout:       900,
 		SubDomainHost:     "",
 		TcpMux:            true,
 		AllowPorts:        make(map[int]struct{}),
@@ -106,6 +105,7 @@ func GetDefaultServerConf() *ServerCommonConf {
 		MaxPortsPerClient: 0,
 		HeartBeatTimeout:  90,
 		UserConnTimeout:   10,
+		Custom404Page:     "",
 	}
 }
 
@@ -303,6 +303,11 @@ func UnmarshalServerConfFromIni(defaultCfg *ServerCommonConf, content string) (c
 		cfg.TcpMux = false
 	} else {
 		cfg.TcpMux = true
+	}
+
+
+	if tmpStr := commonSection.Key("custom_404_page").String(); len(tmpStr) > 0 {
+		cfg.Custom404Page = tmpStr
 	}
 
 	if tmpStr := commonSection.Key("heartbeat_timeout").String(); len(tmpStr) > 0 {

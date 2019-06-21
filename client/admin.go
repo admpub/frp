@@ -16,8 +16,10 @@ package client
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 
+	"github.com/admpub/frp/assets"
 	"github.com/admpub/frp/g"
 	"github.com/webx-top/echo"
 	"github.com/webx-top/echo/engine"
@@ -40,6 +42,17 @@ func (svr *Service) RunAdminServer(addr string, port int) (err error) {
 	}
 	e.Get("/api/reload", svr.apiReload)
 	e.Get("/api/status", svr.apiStatus)
+	e.Get("/api/config", svr.apiGetConfig)
+	e.Put("/api/config", svr.apiPutConfig)
+
+	// view
+	e.Get("/favicon.ico", http.FileServer(assets.FileSystem))
+	e.Get("/static/*", func(c echo.Context) error {
+		return c.File(c.Param("*"), assets.FileSystem)
+	})
+	e.Get("/", func(c echo.Context) error {
+		return c.Redirect("/static/")
+	})
 	address := fmt.Sprintf("%s:%d", addr, port)
 	cfg := &engine.Config{
 		Address:      address,

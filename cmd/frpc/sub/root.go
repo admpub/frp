@@ -17,7 +17,6 @@ package sub
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"os"
 	"os/signal"
@@ -70,11 +69,15 @@ var (
 	serverName        string
 	bindAddr          string
 	bindPort          int
+
+	kcpDoneCh chan struct{}
 )
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&cfgFile, "", "c", "./frpc.ini", "config file of frpc")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "./frpc.ini", "config file of frpc")
 	rootCmd.PersistentFlags().BoolVarP(&showVersion, "version", "v", false, "version of frpc")
+
+	kcpDoneCh = make(chan struct{})
 }
 
 var rootCmd = &cobra.Command{
@@ -108,20 +111,18 @@ func handleSignal(svr *client.Service) {
 	<-ch
 	svr.Close()
 	time.Sleep(250 * time.Millisecond)
-	os.Exit(0)
+	close(kcpDoneCh)
 }
 
-func parseClientCommonCfg(fileType int, filePath string) (err error) {
+func parseClientCommonCfg(fileType int, content string) (err error) {
 	if fileType == CfgFileTypeIni {
-		err = parseClientCommonCfgFromIni(filePath)
+		err = parseClientCommonCfgFromIni(content)
 	} else if fileType == CfgFileTypeCmd {
 		err = parseClientCommonCfgFromCmd()
 	}
 	if err != nil {
 		return
 	}
-
-	g.GlbClientCfg.CfgFile = cfgFile
 
 	err = g.GlbClientCfg.ClientCommonConf.Check()
 	if err != nil {
@@ -130,13 +131,7 @@ func parseClientCommonCfg(fileType int, filePath string) (err error) {
 	return
 }
 
-func parseClientCommonCfgFromIni(filePath string) (err error) {
-	b, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		return err
-	}
-	content := string(b)
-
+func parseClientCommonCfgFromIni(content string) (err error) {
 	cfg, err := config.UnmarshalClientConfFromIni(&g.GlbClientCfg.ClientCommonConf, content)
 	if err != nil {
 		return err
@@ -166,21 +161,28 @@ func parseClientCommonCfgFromCmd() (err error) {
 	g.GlbClientCfg.LogLevel = logLevel
 	g.GlbClientCfg.LogFile = logFile
 	g.GlbClientCfg.LogMaxDays = int64(logMaxDays)
+	if logFile == "console" {
+		g.GlbClientCfg.LogWay = "console"
+	} else {
+		g.GlbClientCfg.LogWay = "file"
+	}
 	return nil
 }
 
 func runClient(cfgFilePath string) (err error) {
-	err = parseClientCommonCfg(CfgFileTypeIni, cfgFilePath)
+	var content string
+	content, err = config.GetRenderedConfFromFile(cfgFilePath)
+	if err != nil {
+		return
+	}
+	g.GlbClientCfg.CfgFile = cfgFilePath
+
+	conf, err := ini.Load(cfgFilePath)
 	if err != nil {
 		return
 	}
 
-	conf, err := ini.Load(cfgFilePath)
-	if err != nil {
-		return err
-	}
-
-	pxyCfgs, visitorCfgs, err := config.LoadProxyConfFromIni(g.GlbClientCfg.User, conf, g.GlbClientCfg.Start)
+	pxyCfgs, visitorCfgs, err := config.LoadAllConfFromIni(g.GlbClientCfg.User, content, g.GlbClientCfg.Start)
 	if err != nil {
 		return err
 	}
@@ -189,7 +191,7 @@ func runClient(cfgFilePath string) (err error) {
 	return
 }
 
-func startService(pxyCfgs map[string]config.ProxyConf, visitorCfgs map[string]config.ProxyConf) (err error) {
+func startService(pxyCfgs map[string]config.ProxyConf, visitorCfgs map[string]config.VisitorConf) (err error) {
 	log.InitLog(g.GlbClientCfg.LogWay, g.GlbClientCfg.LogFile, g.GlbClientCfg.LogLevel, g.GlbClientCfg.LogMaxDays)
 	if g.GlbClientCfg.DnsServer != "" {
 		s := g.GlbClientCfg.DnsServer
@@ -204,7 +206,11 @@ func startService(pxyCfgs map[string]config.ProxyConf, visitorCfgs map[string]co
 			},
 		}
 	}
-	svr := client.NewService(pxyCfgs, visitorCfgs)
+	svr, errRet := client.NewService(pxyCfgs, visitorCfgs)
+	if errRet != nil {
+		err = errRet
+		return
+	}
 
 	// Capture the exit signal if we use kcp.
 	if g.GlbClientCfg.Protocol == "kcp" {
@@ -212,5 +218,8 @@ func startService(pxyCfgs map[string]config.ProxyConf, visitorCfgs map[string]co
 	}
 
 	err = svr.Run()
+	if g.GlbClientCfg.Protocol == "kcp" {
+		<-kcpDoneCh
+	}
 	return
 }
