@@ -19,12 +19,12 @@ import (
 	"net"
 	"strings"
 
-	"github.com/fatedier/frp/g"
-	"github.com/fatedier/frp/models/config"
-	"github.com/fatedier/frp/server/stats"
-	frpNet "github.com/fatedier/frp/utils/net"
-	"github.com/fatedier/frp/utils/util"
-	"github.com/fatedier/frp/utils/vhost"
+	"github.com/admpub/frp/g"
+	"github.com/admpub/frp/models/config"
+	"github.com/admpub/frp/server/stats"
+	frpNet "github.com/admpub/frp/utils/net"
+	"github.com/admpub/frp/utils/util"
+	"github.com/admpub/frp/utils/vhost"
 
 	frpIo "github.com/fatedier/golib/io"
 )

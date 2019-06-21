@@ -91,8 +91,8 @@ func NewProxyConfFromIni(prefix string, name string, section *ini.Section) (cfg 
 		return
 	}
 	if err = cfg.CheckForCli(); err != nil {
-	return
-}
+		return
+	}
 	return
 }
 
@@ -481,8 +481,8 @@ func (cfg *TcpProxyConf) UnmarshalFromIni(prefix string, name string, section *i
 	if err = cfg.BindInfoConf.UnmarshalFromIni(prefix, name, section); err != nil {
 		return
 	}
-		return
-	}
+	return
+}
 
 func (cfg *TcpProxyConf) MarshalToMsg(pMsg *msg.NewProxy) {
 	cfg.BaseProxyConf.MarshalToMsg(pMsg)
@@ -529,8 +529,8 @@ func (cfg *UdpProxyConf) UnmarshalFromIni(prefix string, name string, section *i
 	if err = cfg.BindInfoConf.UnmarshalFromIni(prefix, name, section); err != nil {
 		return
 	}
-		return
-	}
+	return
+}
 
 func (cfg *UdpProxyConf) MarshalToMsg(pMsg *msg.NewProxy) {
 	cfg.BaseProxyConf.MarshalToMsg(pMsg)
@@ -686,8 +686,8 @@ func (cfg *HttpsProxyConf) UnmarshalFromIni(prefix string, name string, section 
 	if err = cfg.DomainConf.UnmarshalFromIni(prefix, name, section); err != nil {
 		return
 	}
-		return
-	}
+	return
+}
 
 func (cfg *HttpsProxyConf) MarshalToMsg(pMsg *msg.NewProxy) {
 	cfg.BaseProxyConf.MarshalToMsg(pMsg)
@@ -770,9 +770,9 @@ func (cfg *StcpProxyConf) UnmarshalFromIni(prefix string, name string, section *
 			return fmt.Errorf("Parse conf error: proxy [%s] bind_port not found", name)
 		}
 	} else {*/
-		if err = cfg.LocalSvrConf.UnmarshalFromIni(prefix, name, section); err != nil {
-			return
-		}
+	if err = cfg.LocalSvrConf.UnmarshalFromIni(prefix, name, section); err != nil {
+		return
+	}
 	return
 }
 
@@ -787,10 +787,10 @@ func (cfg *StcpProxyConf) CheckForCli() (err error) {
 	}
 	if cfg.Role != "server" {
 		err = fmt.Errorf("role should be 'server'")
-			return
-		}
-			return
-		}
+		return
+	}
+	return
+}
 
 func (cfg *StcpProxyConf) CheckForSvr() (err error) {
 	return
@@ -850,9 +850,9 @@ func (cfg *XtcpProxyConf) UnmarshalFromIni(prefix string, name string, section *
 			return fmt.Errorf("Parse conf error: proxy [%s] bind_port not found", name)
 		}
 	} else {*/
-		if err = cfg.LocalSvrConf.UnmarshalFromIni(prefix, name, section); err != nil {
-			return
-		}
+	if err = cfg.LocalSvrConf.UnmarshalFromIni(prefix, name, section); err != nil {
+		return
+	}
 	return
 }
 
@@ -867,10 +867,10 @@ func (cfg *XtcpProxyConf) CheckForCli() (err error) {
 	}
 	if cfg.Role != "server" {
 		err = fmt.Errorf("role should be 'server'")
-			return
-		}
-			return
-		}
+		return
+	}
+	return
+}
 
 func (cfg *XtcpProxyConf) CheckForSvr() (err error) {
 	return
@@ -909,13 +909,8 @@ func ParseRangeSection(name string, section *ini.Section) (sections map[string]*
 
 // LoadProxyConfFromIni if len(startProxy) is 0, start all
 // otherwise just start proxies in startProxy map
-<<<<<<< .mine
 func LoadProxyConfFromIni(prefix string, conf *ini.File, startProxy map[string]struct{}) (
 	proxyConfs map[string]ProxyConf, visitorConfs map[string]ProxyConf, err error) {
-=======
-func LoadAllConfFromIni(prefix string, content string, startProxy map[string]struct{}) (
-	proxyConfs map[string]ProxyConf, visitorConfs map[string]VisitorConf, err error) {
->>>>>>> .theirs
 
 	if len(prefix) > 0 {
 		prefix += "."

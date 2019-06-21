@@ -17,7 +17,7 @@ package stats
 import (
 	"time"
 
-	"github.com/fatedier/frp/utils/metric"
+	"github.com/admpub/frp/utils/metric"
 )
 
 const (

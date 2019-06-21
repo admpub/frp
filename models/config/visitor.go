@@ -19,9 +19,9 @@ import (
 	"reflect"
 	"strconv"
 
-	"github.com/fatedier/frp/models/consts"
+	"github.com/admpub/frp/models/consts"
 
-	ini "github.com/vaughan0/go-ini"
+	"github.com/admpub/ini"
 )
 
 var (
@@ -50,7 +50,7 @@ func NewVisitorConfByType(cfgType string) VisitorConf {
 	return cfg
 }
 
-func NewVisitorConfFromIni(prefix string, name string, section ini.Section) (cfg VisitorConf, err error) {
+func NewVisitorConfFromIni(prefix string, name string, section *ini.File) (cfg VisitorConf, err error) {
 	cfgType := section["type"]
 	if cfgType == "" {
 		err = fmt.Errorf("visitor [%s] type shouldn't be empty", name)

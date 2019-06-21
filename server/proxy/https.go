@@ -17,10 +17,10 @@ package proxy
 import (
 	"strings"
 
-	"github.com/fatedier/frp/g"
-	"github.com/fatedier/frp/models/config"
-	"github.com/fatedier/frp/utils/util"
-	"github.com/fatedier/frp/utils/vhost"
+	"github.com/admpub/frp/g"
+	"github.com/admpub/frp/models/config"
+	"github.com/admpub/frp/utils/util"
+	"github.com/admpub/frp/utils/vhost"
 )
 
 type HttpsProxy struct {
