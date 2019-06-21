@@ -168,7 +168,6 @@ func NewProxyStatusResp(status *proxy.ProxyStatus) ProxyStatusResp {
 // api/status
 func (svr *Service) apiStatus(c echo.Context) (err error) {
 	var (
-		buf []byte
 		res StatusResp
 	)
 	res.Tcp = make([]ProxyStatusResp, 0)
