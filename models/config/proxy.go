@@ -362,7 +362,7 @@ func (cfg *LocalSvrConf) UnmarshalFromIni(prefix string, name string, section *i
 			}
 		}
 	} else {
-		if cfg.LocalIp = section.Key("local_ip").String(); len(cfg.LocalIp) > 0 {
+		if cfg.LocalIp = section.Key("local_ip").String(); len(cfg.LocalIp) == 0 {
 			cfg.LocalIp = "127.0.0.1"
 		}
 
@@ -948,6 +948,9 @@ func LoadAllConfFromIni(prefix string, conf *ini.File, startProxy map[string]str
 
 		for subName, subSection := range subSections {
 			role := subSection.Key("role").String()
+			if len(role) == 0 {
+				role = `server`
+			}
 			if role == "server" {
 				cfg, errRet := NewProxyConfFromIni(prefix, subName, subSection)
 				if errRet != nil {
