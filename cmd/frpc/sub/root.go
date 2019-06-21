@@ -177,7 +177,7 @@ func runClient(cfgFilePath string) (err error) {
 		return
 	}
 
-	pxyCfgs, visitorCfgs, err := config.LoadProxyConfFromIni(g.GlbClientCfg.User, conf, g.GlbClientCfg.Start)
+	pxyCfgs, visitorCfgs, err := config.LoadAllConfFromIni(g.GlbClientCfg.User, conf, g.GlbClientCfg.Start)
 	if err != nil {
 		return err
 	}

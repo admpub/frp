@@ -907,9 +907,9 @@ func ParseRangeSection(name string, section *ini.Section) (sections map[string]*
 	return
 }
 
-// LoadProxyConfFromIni if len(startProxy) is 0, start all
+// LoadAllConfFromIni if len(startProxy) is 0, start all
 // otherwise just start proxies in startProxy map
-func LoadProxyConfFromIni(prefix string, conf *ini.File, startProxy map[string]struct{}) (
+func LoadAllConfFromIni(prefix string, conf *ini.File, startProxy map[string]struct{}) (
 	proxyConfs map[string]ProxyConf, visitorConfs map[string]VisitorConf, err error) {
 
 	if len(prefix) > 0 {
