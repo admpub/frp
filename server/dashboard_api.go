@@ -16,7 +16,6 @@ package server
 
 import (
 	"encoding/json"
-	"net/http"
 
 	"github.com/admpub/frp/g"
 	"github.com/admpub/frp/models/config"
@@ -51,17 +50,10 @@ type ServerInfoResp struct {
 }
 
 // api/serverinfo
-func (svr *Service) ApiServerInfo(w http.ResponseWriter, r *http.Request) {
+func (svr *Service) ApiServerInfo(c echo.Context) error {
 	res := GeneralResponse{Code: 200}
-	defer func() {
-		log.Info("Http response [%s]: code [%d]", r.URL.Path, res.Code)
-		w.WriteHeader(res.Code)
-		if len(res.Msg) > 0 {
-			w.Write([]byte(res.Msg))
-		}
-	}()
 
-	log.Info("Http request: [%s]", r.URL.Path)
+	log.Info("Http request: [%s]", c.Request().URL().Path())
 	cfg := &g.GlbServerCfg.ServerCommonConf
 	serverStats := svr.statsCollector.GetServer()
 	svrResp := ServerInfoResp{
@@ -85,6 +77,8 @@ func (svr *Service) ApiServerInfo(w http.ResponseWriter, r *http.Request) {
 
 	buf, _ := json.Marshal(&svrResp)
 	res.Msg = string(buf)
+	log.Info("Http response [%s]: code [%d]", c.Request().URL().Path(), res.Code)
+	return c.String(res.Msg, res.Code)
 }
 
 type BaseOutConf struct {
