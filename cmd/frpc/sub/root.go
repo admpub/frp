@@ -170,11 +170,6 @@ func parseClientCommonCfgFromCmd() (err error) {
 }
 
 func runClient(cfgFilePath string) (err error) {
-	var content string
-	content, err = config.GetRenderedConfFromFile(cfgFilePath)
-	if err != nil {
-		return
-	}
 	g.GlbClientCfg.CfgFile = cfgFilePath
 
 	conf, err := ini.Load(cfgFilePath)
@@ -182,7 +177,7 @@ func runClient(cfgFilePath string) (err error) {
 		return
 	}
 
-	pxyCfgs, visitorCfgs, err := config.LoadAllConfFromIni(g.GlbClientCfg.User, content, g.GlbClientCfg.Start)
+	pxyCfgs, visitorCfgs, err := config.LoadProxyConfFromIni(g.GlbClientCfg.User, conf, g.GlbClientCfg.Start)
 	if err != nil {
 		return err
 	}
