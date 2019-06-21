@@ -46,6 +46,9 @@ func (svr *Service) RegisterTo(router echo.RouteRegister) {
 	}
 	router.Get("/static*", func(c echo.Context) error {
 		file := c.Param(`*`)
+		if len(file) == 0 || file == `/` {
+			file = `/index.html`
+		}
 		return c.File(file, assets.FileSystem)
 	})
 }

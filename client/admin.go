@@ -47,8 +47,12 @@ func (svr *Service) RunAdminServer(addr string, port int) (err error) {
 
 	// view
 	e.Get("/favicon.ico", http.FileServer(assets.FileSystem))
-	e.Get("/static/*", func(c echo.Context) error {
-		return c.File(c.Param("*"), assets.FileSystem)
+	e.Get("/static*", func(c echo.Context) error {
+		file := c.Param("*")
+		if len(file) == 0 || file == `/` {
+			file = `/index.html`
+		}
+		return c.File(file, assets.FileSystem)
 	})
 	e.Get("/", func(c echo.Context) error {
 		return c.Redirect("/static/")
