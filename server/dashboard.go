@@ -40,12 +40,7 @@ func (svr *Service) RunDashboardServer(addr string, port int) (err error) {
 			return user == g.GlbServerCfg.DashboardUser && passwd == g.GlbServerCfg.DashboardPwd
 		}))
 	}
-	// api, see dashboard_api.go
-	e.Get("/api/serverinfo", svr.ApiServerInfo)
-	e.Get("/api/proxy/:type", svr.ApiProxyByType)
-	e.Get("/api/proxy/:type/:name", svr.ApiProxyByTypeAndName)
-	e.Get("/api/traffic/:name", svr.ApiProxyTraffic)
-	RegisterTo(e)
+	svr.RegisterTo(e)
 	// view
 	e.Get("/favicon.ico", func(c echo.Context) error {
 		return c.File(c.Path(), assets.FileSystem)

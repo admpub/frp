@@ -83,3 +83,26 @@ func RegisterTo(router echo.RouteRegister) {
 		return c.File(file, assets.FileSystem)
 	})
 }
+
+// RegisterTo 为echo框架创建路由
+func (svr *Service) RegisterTo(router echo.RouteRegister) {
+	// api, see dashboard_api.go
+	router.Get("/api/serverinfo", svr.ApiServerInfo)
+	router.Get("/api/proxy/:type", svr.ApiProxyByType)
+	router.Get("/api/proxy/:type/:name", svr.ApiProxyByTypeAndName)
+	router.Get("/api/traffic/:name", svr.ApiProxyTraffic)
+	// view
+	router.Get("/", func(c echo.Context) error {
+		return c.Redirect("./static/")
+	})
+	cfg := &g.GlbServerCfg.ServerCommonConf
+	//cfg.AssetsDir = `/Users/hank/go/src/github.com/admpub/frp/assets/static`
+	err := assets.Load(cfg.AssetsDir)
+	if err != nil {
+		panic(err)
+	}
+	router.Get("/static*", func(c echo.Context) error {
+		file := c.Param(`*`)
+		return c.File(file, assets.FileSystem)
+	})
+}
