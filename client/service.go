@@ -31,7 +31,6 @@ import (
 	frpNet "github.com/admpub/frp/utils/net"
 	"github.com/admpub/frp/utils/util"
 	"github.com/admpub/frp/utils/version"
-	"github.com/webx-top/echo"
 
 	fmux "github.com/hashicorp/yamux"
 )
@@ -101,7 +100,7 @@ func (svr *Service) Run() error {
 	}
 
 	go svr.keepControllerWorking()
-	echo.Dump(g.GlbClientCfg)
+
 	if g.GlbClientCfg.AdminPort != 0 {
 		err := svr.RunAdminServer(g.GlbClientCfg.AdminAddr, g.GlbClientCfg.AdminPort)
 		if err != nil {
