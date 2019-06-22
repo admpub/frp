@@ -170,7 +170,17 @@ func parseClientCommonCfgFromCmd() (err error) {
 }
 
 func runClient(cfgFilePath string) (err error) {
+	var content string
+	content, err = config.GetRenderedConfFromFile(cfgFilePath)
+	if err != nil {
+		return
+	}
 	g.GlbClientCfg.CfgFile = cfgFilePath
+
+	err = parseClientCommonCfg(CfgFileTypeIni, content)
+	if err != nil {
+		return
+	}
 
 	conf, err := ini.Load(cfgFilePath)
 	if err != nil {
