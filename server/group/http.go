@@ -5,9 +5,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	frpNet "github.com/fatedier/frp/utils/net"
-
-	"github.com/fatedier/frp/utils/vhost"
+	frpNet "github.com/admpub/frp/utils/net"
+	"github.com/admpub/frp/utils/vhost"
 )
 
 type HTTPGroupController struct {
