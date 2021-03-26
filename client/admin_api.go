@@ -264,7 +264,7 @@ func (svr *Service) apiPutConfig(c echo.Context) (err error) {
 	}
 
 	// get new config content
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(c.Request().Body())
 	if err != nil {
 		res.Code = 400
 		res.Msg = fmt.Sprintf("read request body error: %v", err)
