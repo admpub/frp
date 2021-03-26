@@ -18,7 +18,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/admpub/golib/crypto"
+	"github.com/fatedier/golib/crypto"
 
 	_ "github.com/admpub/frp/assets/frps/statik"
 	_ "github.com/admpub/frp/pkg/metrics"

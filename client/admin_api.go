@@ -17,12 +17,10 @@ package client
 import (
 	"fmt"
 	"io/ioutil"
-	"net/http"
 	"sort"
 	"strings"
 
 	"github.com/admpub/frp/client/proxy"
-	"github.com/admpub/frp/g"
 	"github.com/admpub/frp/pkg/config"
 	"github.com/admpub/frp/pkg/util/log"
 	"github.com/webx-top/echo"
@@ -40,7 +38,7 @@ func (svr *Service) apiReload(c echo.Context) (err error) {
 	log.Info("Http request [/api/reload]")
 	defer func() {
 		log.Info("Http response [/api/reload]: code [%d]", res.Code)
-		err = c.JSON(&res)
+		err = c.String(res.Msg, res.Code)
 	}()
 
 	content, err := config.GetRenderedConfFromFile(svr.cfgFile)
@@ -211,16 +209,13 @@ func (svr *Service) apiStatus(c echo.Context) (err error) {
 }
 
 // GET api/config
-func (svr *Service) apiGetConfig(w http.ResponseWriter, r *http.Request) {
+func (svr *Service) apiGetConfig(c echo.Context) (err error) {
 	res := GeneralResponse{Code: 200}
 
 	log.Info("Http get request [/api/config]")
 	defer func() {
 		log.Info("Http get response [/api/config], code [%d]", res.Code)
-		w.WriteHeader(res.Code)
-		if len(res.Msg) > 0 {
-			w.Write([]byte(res.Msg))
-		}
+		err = c.String(res.Msg, res.Code)
 	}()
 
 	if svr.cfgFile == "" {
@@ -248,22 +243,20 @@ func (svr *Service) apiGetConfig(w http.ResponseWriter, r *http.Request) {
 		newRows = append(newRows, row)
 	}
 	res.Msg = strings.Join(newRows, "\n")
+	return
 }
 
 // PUT api/config
-func (svr *Service) apiPutConfig(w http.ResponseWriter, r *http.Request) {
+func (svr *Service) apiPutConfig(c echo.Context) (err error) {
 	res := GeneralResponse{Code: 200}
 
 	log.Info("Http put request [/api/config]")
 	defer func() {
 		log.Info("Http put response [/api/config], code [%d]", res.Code)
-		w.WriteHeader(res.Code)
-		if len(res.Msg) > 0 {
-			w.Write([]byte(res.Msg))
-		}
+		err = c.String(res.Msg, res.Code)
 	}()
 
-	if len(g.GlbClientCfg.CfgFile) == 0 {
+	if len(svr.cfgFile) == 0 {
 		res.Code = 400
 		res.Msg = "frpc has no config file path"
 		log.Warn("%s", res.Msg)
@@ -334,4 +327,5 @@ func (svr *Service) apiPutConfig(w http.ResponseWriter, r *http.Request) {
 		log.Warn("%s", res.Msg)
 		return
 	}
+	return
 }

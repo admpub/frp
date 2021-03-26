@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/fatedier/frp/pkg/msg"
-	"github.com/fatedier/frp/pkg/util/util"
+	"github.com/admpub/frp/pkg/msg"
+	"github.com/admpub/frp/pkg/util/util"
 )
 
 type TokenConfig struct {

@@ -75,8 +75,10 @@ func (svr *Service) ApiServerInfo(c echo.Context) error {
 		ProxyTypeCounts: serverStats.ProxyTypeCounts,
 	}
 
+	buf, _ := json.Marshal(&svrResp)
+	res.Msg = string(buf)
 	log.Info("Http response [%s]: code [%d]", c.Request().URL().Path(), res.Code)
-	return c.JSON(svrResp, res.Code)
+	return c.String(res.Msg, res.Code)
 }
 
 type BaseOutConf struct {
@@ -166,8 +168,10 @@ func (svr *Service) ApiProxyByType(c echo.Context) error {
 	proxyInfoResp := GetProxyInfoResp{}
 	proxyInfoResp.Proxies = svr.getProxyStatsByType(proxyType)
 
+	buf, _ := json.Marshal(&proxyInfoResp)
+	res.Msg = string(buf)
 	log.Info("Http response [%s]: code [%d]", c.Request().URL().Path(), res.Code)
-	return c.JSON(proxyInfoResp, res.Code)
+	return c.String(res.Msg, res.Code)
 }
 
 func (svr *Service) getProxyStatsByType(proxyType string) (proxyInfos []*ProxyStatsInfo) {
@@ -227,8 +231,10 @@ func (svr *Service) ApiProxyByTypeAndName(c echo.Context) error {
 		return c.String(res.Msg, res.Code)
 	}
 
+	buf, _ := json.Marshal(&proxyStatsResp)
+	res.Msg = string(buf)
 	log.Info("Http response [%s]: code [%d]", c.Request().URL().Path(), res.Code)
-	return c.JSON(proxyStatsResp, res.Code)
+	return c.String(res.Msg, res.Code)
 }
 
 func (svr *Service) getProxyStatsByTypeAndName(proxyType string, proxyName string) (proxyInfo GetProxyStatsResp, code int, msg string) {
@@ -292,6 +298,8 @@ func (svr *Service) ApiProxyTraffic(c echo.Context) error {
 	trafficResp.TrafficIn = proxyTrafficInfo.TrafficIn
 	trafficResp.TrafficOut = proxyTrafficInfo.TrafficOut
 
+	buf, _ := json.Marshal(&trafficResp)
+	res.Msg = string(buf)
 	log.Info("Http response [%s]: code [%d]", c.Request().URL().Path(), res.Code)
-	return c.JSON(trafficResp, res.Code)
+	return c.String(res.Msg, res.Code)
 }

@@ -22,7 +22,7 @@
     export default {
         data() {
             return {
-                status: null
+                status: []
             }
         },
         created() {
@@ -34,9 +34,7 @@
         methods: {
             fetchData() {
                 fetch('/api/status', {credentials: 'include'})
-              .then(res => {
-                return res.json()
-              }).then(json => {
+              .then(json => {
                 this.status = new Array()
                 for (let s of json.tcp) {
                     this.status.push(s)

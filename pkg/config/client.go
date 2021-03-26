@@ -19,8 +19,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/fatedier/frp/pkg/auth"
-	"github.com/fatedier/frp/pkg/util/util"
+	"github.com/admpub/frp/pkg/auth"
+	"github.com/admpub/frp/pkg/util/util"
 
 	"gopkg.in/ini.v1"
 )

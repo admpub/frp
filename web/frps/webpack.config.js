@@ -96,6 +96,7 @@ module.exports = (options = {}) => ({
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': ''
+                    //'^/api': '/frp/api'
                 }
             }
         },
