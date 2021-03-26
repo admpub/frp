@@ -23,5 +23,6 @@ func main() {
 		panic(err)
 	}
 	svr.RegisterTo(g)
+	// svr.Run()
 	e.Run(standard.New(`:8080`))
 }
