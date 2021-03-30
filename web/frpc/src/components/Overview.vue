@@ -34,7 +34,9 @@
         methods: {
             fetchData() {
                 fetch('/api/status', {credentials: 'include'})
-              .then(json => {
+              .then(res => {
+                return res.json()
+              }).then(json => {
                 this.status = new Array()
                 for (let s of json.tcp) {
                     this.status.push(s)
