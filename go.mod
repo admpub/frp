@@ -28,7 +28,7 @@ require (
 	github.com/templexxx/cpufeat v0.0.0-20170927014610-3794dfbfb047 // indirect
 	github.com/templexxx/xor v0.0.0-20170926022130-0af8e873c554 // indirect
 	github.com/tjfoc/gmsm v0.0.0-20171124023159-98aa888b79d8 // indirect
-	github.com/webx-top/echo v2.12.2+incompatible
+	github.com/webx-top/echo v2.13.1+incompatible
 	github.com/webx-top/echo-prometheus v1.0.3
 	github.com/xtaci/lossyconn v0.0.0-20190602105132-8df528c0c9ae // indirect
 	golang.org/x/net v0.0.0-20210510120150-4163338589ed
