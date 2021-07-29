@@ -14,7 +14,6 @@ require (
 	github.com/gorilla/mux v1.7.3
 	github.com/gorilla/websocket v1.4.2
 	github.com/hashicorp/yamux v0.0.0-20210316155119-a95892c5f864
-	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/klauspost/cpuid v1.2.0 // indirect
 	github.com/klauspost/reedsolomon v1.9.1 // indirect
 	github.com/mattn/go-runewidth v0.0.4 // indirect

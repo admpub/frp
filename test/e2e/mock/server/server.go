@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net"
 
-	libnet "github.com/fatedier/frp/pkg/util/net"
+	libnet "github.com/admpub/frp/pkg/util/net"
 )
 
 type ServerType string

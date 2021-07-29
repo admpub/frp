@@ -1,8 +1,6 @@
 package framework
 
 import (
-	"time"
-
 	"github.com/admpub/frp/test/e2e/framework/consts"
 	"github.com/admpub/frp/test/e2e/pkg/request"
 )
