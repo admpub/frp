@@ -10,31 +10,33 @@ require (
 	github.com/fatedier/beego v0.0.0-20171024143340-6c6a4f5bd5eb
 	github.com/fatedier/golib v0.1.1-0.20200901083111-1f870741e185
 	github.com/fatedier/kcp-go v2.0.4-0.20190803094908-fe8645b0a904+incompatible
-	github.com/google/uuid v1.1.2
-	github.com/gorilla/mux v1.7.3
+	github.com/go-kit/kit v0.10.0 // indirect
+	github.com/golang/snappy v0.0.4 // indirect
+	github.com/google/uuid v1.3.0
+	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.2
-	github.com/hashicorp/yamux v0.0.0-20210316155119-a95892c5f864
-	github.com/klauspost/cpuid v1.2.0 // indirect
-	github.com/klauspost/reedsolomon v1.9.1 // indirect
-	github.com/mattn/go-runewidth v0.0.4 // indirect
-	github.com/onsi/ginkgo v1.12.3
-	github.com/onsi/gomega v1.10.1
-	github.com/pires/go-proxyproto v0.0.0-20190111085350-4d51b51e3bfc
-	github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 // indirect
-	github.com/prometheus/client_golang v1.10.0
-	github.com/rodaine/table v1.0.0
-	github.com/spf13/cobra v0.0.3
-	github.com/stretchr/testify v1.6.1
-	github.com/templexxx/cpufeat v0.0.0-20170927014610-3794dfbfb047 // indirect
-	github.com/templexxx/xor v0.0.0-20170926022130-0af8e873c554 // indirect
-	github.com/tjfoc/gmsm v0.0.0-20171124023159-98aa888b79d8 // indirect
-	github.com/webx-top/echo v2.13.1+incompatible
-	github.com/webx-top/echo-prometheus v1.0.3
+	github.com/hashicorp/yamux v0.0.0-20210707203944-259a57b3608c
+	github.com/klauspost/cpuid v1.3.1 // indirect
+	github.com/klauspost/cpuid/v2 v2.0.8 // indirect
+	github.com/klauspost/reedsolomon v1.9.12 // indirect
+	github.com/onsi/ginkgo v1.16.4
+	github.com/onsi/gomega v1.14.0
+	github.com/pires/go-proxyproto v0.6.0
+	github.com/pquerna/cachecontrol v0.1.0 // indirect
+	github.com/prometheus/client_golang v1.11.0
+	github.com/rodaine/table v1.0.1
+	github.com/spf13/cobra v1.2.1
+	github.com/stretchr/testify v1.7.0
+	github.com/templexxx/cpufeat v0.0.0-20180724012125-cef66df7f161 // indirect
+	github.com/templexxx/xor v0.0.0-20191217153810-f85b25db303b // indirect
+	github.com/tjfoc/gmsm v1.4.1 // indirect
+	github.com/webx-top/echo v2.18.3+incompatible
+	github.com/webx-top/echo-prometheus v1.0.7
 	github.com/xtaci/lossyconn v0.0.0-20190602105132-8df528c0c9ae // indirect
-	golang.org/x/net v0.0.0-20210510120150-4163338589ed
-	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c
-	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba
+	golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985
+	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914
+	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
 	gopkg.in/ini.v1 v1.62.0
-	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
-	k8s.io/apimachinery v0.21.0
+	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
+	k8s.io/apimachinery v0.21.3
 )
