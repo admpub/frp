@@ -3,20 +3,18 @@ module github.com/admpub/frp
 go 1.16
 
 require (
-	github.com/admpub/realip v0.0.0-20210421084339-374cf5df122d // indirect
 	github.com/admpub/statik v0.1.7
 	github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/fatedier/beego v0.0.0-20171024143340-6c6a4f5bd5eb
 	github.com/fatedier/golib v0.1.1-0.20200901083111-1f870741e185
 	github.com/fatedier/kcp-go v2.0.4-0.20190803094908-fe8645b0a904+incompatible
-	github.com/go-kit/kit v0.10.0 // indirect
+	github.com/go-playground/validator/v10 v10.8.0
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/hashicorp/yamux v0.0.0-20210707203944-259a57b3608c
-	github.com/klauspost/cpuid v1.3.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.8 // indirect
 	github.com/klauspost/reedsolomon v1.9.12 // indirect
 	github.com/onsi/ginkgo v1.16.4
@@ -38,5 +36,6 @@ require (
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
 	gopkg.in/ini.v1 v1.62.0
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
-	k8s.io/apimachinery v0.21.3
+	k8s.io/apimachinery v0.22.0
+	k8s.io/client-go v0.22.0
 )
