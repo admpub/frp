@@ -5,10 +5,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fatedier/frp/test/e2e/framework"
-	"github.com/fatedier/frp/test/e2e/framework/consts"
-	"github.com/fatedier/frp/test/e2e/mock/server/streamserver"
-	"github.com/fatedier/frp/test/e2e/pkg/request"
+	"github.com/admpub/frp/test/e2e/framework"
+	"github.com/admpub/frp/test/e2e/framework/consts"
+	"github.com/admpub/frp/test/e2e/mock/server/streamserver"
+	"github.com/admpub/frp/test/e2e/pkg/request"
 
 	. "github.com/onsi/ginkgo"
 )

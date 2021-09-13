@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fatedier/frp/test/e2e/framework"
-	"github.com/fatedier/frp/test/e2e/framework/consts"
-	clientsdk "github.com/fatedier/frp/test/e2e/pkg/sdk/client"
+	"github.com/admpub/frp/test/e2e/framework"
+	"github.com/admpub/frp/test/e2e/framework/consts"
+	clientsdk "github.com/admpub/frp/test/e2e/pkg/sdk/client"
 
 	. "github.com/onsi/ginkgo"
 )
