@@ -104,7 +104,7 @@ type HealthCheckConf struct {
 	HealthCheckURL string `ini:"health_check_url" json:"health_check_url"`
 	// HealthCheckAddr specifies the address to connect to if the health check
 	// type is "tcp".
-	HealthCheckAddr string `ini:"-"`
+	HealthCheckAddr string `ini:"-" json:"health_check_addr"`
 }
 
 // BaseProxyConf provides configuration info that is common to all types.
