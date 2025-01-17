@@ -43,7 +43,7 @@ func (pxy *XTCPProxy) Run() (remoteAddr string, err error) {
 		for {
 			select {
 			case <-pxy.closeCh:
-				break
+				return
 			case sidRequest := <-sidCh:
 				sr := sidRequest
 				workConn, errRet := pxy.GetWorkConnFromPool(nil, nil)

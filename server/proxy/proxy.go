@@ -235,6 +235,7 @@ func NewProxy(ctx context.Context, userInfo plugin.UserInfo, rc *controller.Reso
 		pxy = &XTCPProxy{
 			BaseProxy: &basePxy,
 			cfg:       cfg,
+			closeCh:   make(chan struct{}),
 		}
 	case *config.SUDPProxyConf:
 		pxy = &SUDPProxy{
